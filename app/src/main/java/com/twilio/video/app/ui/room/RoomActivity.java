@@ -252,6 +252,7 @@ public class RoomActivity extends BaseActivity {
     private MenuItem screenCaptureMenuItem;
     private MenuItem settingsMenuItem;
     private MenuItem deviceMenuItem;
+
     ImageButton drawbtn,chatButton;
     ImageButton chooseColor;
     ImageButton earaser;
@@ -335,52 +336,52 @@ public class RoomActivity extends BaseActivity {
 
     private RoomViewModel roomViewModel;
 
-    private LocalDataTrack localDataTrack;
+//    private LocalDataTrack localDataTrack;
     private boolean disconnectedFromOnDestroy;
 
     // Dedicated thread and handler for messages received from a RemoteDataTrack
-    private final HandlerThread dataTrackMessageThread =
-            new HandlerThread(DATA_TRACK_MESSAGE_THREAD_NAME);
-    private Handler dataTrackMessageThreadHandler;
+//    private final HandlerThread dataTrackMessageThread =
+//            new HandlerThread(DATA_TRACK_MESSAGE_THREAD_NAME);
+//    private Handler dataTrackMessageThreadHandler;
 
     // Map used to map remote data tracks to remote participants
-    private final Map<RemoteDataTrack, RemoteParticipant> dataTrackRemoteParticipantMap =
-            new HashMap<>();
+//    private final Map<RemoteDataTrack, RemoteParticipant> dataTrackRemoteParticipantMap =
+//            new HashMap<>();
 
     // Drawing view listener that sends the events on the local data track
-    private final CollaborativeDrawingView.Listener drawingViewListener =
-            new CollaborativeDrawingView.Listener() {
-                @Override
-                public void onTouchEvent(int actionEvent, float x, float y) {
-                    Log.d(">>ont Touch >>>>", String.format("onTouchEvent: actionEvent=%d, x=%f, y=%f , color=%d",
-                            actionEvent, x, y,localColor));
-                    boolean actionDown = (actionEvent == MotionEvent.ACTION_DOWN);
-                    float normalizedX = x / (float) collaborativeDrawingView.getWidth();
-                    float normalizedY = y / (float) collaborativeDrawingView.getHeight();
-                    MotionMessage motionMessage = new MotionMessage(actionDown,
-                            normalizedX,
-                            normalizedY,localColor,STROKE_WIDTH);
-
-                    if (localDataTrack != null) {
-                        localDataTrack.send(motionMessage.toJsonString());
-                    } else {
-                        Log.e("TAG", "Ignoring touch event because data track is release");
-                    }
-                }
-            };
+//    private final CollaborativeDrawingView.Listener drawingViewListener =
+//            new CollaborativeDrawingView.Listener() {
+//                @Override
+//                public void onTouchEvent(int actionEvent, float x, float y) {
+//                    Log.d(">>ont Touch >>>>", String.format("onTouchEvent: actionEvent=%d, x=%f, y=%f , color=%d",
+//                            actionEvent, x, y,localColor));
+//                    boolean actionDown = (actionEvent == MotionEvent.ACTION_DOWN);
+//                    float normalizedX = x / (float) collaborativeDrawingView.getWidth();
+//                    float normalizedY = y / (float) collaborativeDrawingView.getHeight();
+//                    MotionMessage motionMessage = new MotionMessage(actionDown,
+//                            normalizedX,
+//                            normalizedY,localColor,STROKE_WIDTH);
+//
+//                    if (localDataTrack != null) {
+//                        localDataTrack.send(motionMessage.toJsonString());
+//                    } else {
+//                        Log.e("TAG", "Ignoring touch event because data track is release");
+//                    }
+//                }
+//            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        localDataTrack = LocalDataTrack.create(this);
+        //localDataTrack = LocalDataTrack.create(this);
         loadprefs();
 
 
 
         // Start the thread where data messages are received
-        dataTrackMessageThread.start();
-        dataTrackMessageThreadHandler = new Handler(dataTrackMessageThread.getLooper());
+//        dataTrackMessageThread.start();
+//        dataTrackMessageThreadHandler = new Handler(dataTrackMessageThread.getLooper());
 
         RoomViewModelFactory factory =
                 new RoomViewModelFactory(
@@ -423,105 +424,105 @@ public class RoomActivity extends BaseActivity {
 
         connectButtonClick();
 
-        drawbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(collaborativeDrawingView.getVisibility()==View.GONE){
-                    collaborativeDrawingView.setVisibility(View.VISIBLE);
-                    canVasMenu.setVisibility(View.VISIBLE);
-                    if(joinRoomNameTextView.getText()==null)
-                        collaborativeDrawingView.setEnabled(false);
-                    else
-                        collaborativeDrawingView.setEnabled(true);
-
-                    collaborativeDrawingView.setListener(drawingViewListener);
-                    drawbtn.setImageResource(R.drawable.ic_baseline_layers_clear_24);
-                    if(room!=null){
-                        for (RemoteParticipant remoteParticipant : room.getRemoteParticipants()) {
-                            addRemoteParticipant(remoteParticipant);
-                        }
-                    }
-
-                }else {
-                    collaborativeDrawingView.setVisibility(View.GONE);
-                    collaborativeDrawingView.clear();
-                    drawbtn.setImageResource(R.drawable.ic_baseline_brush_24);
-                    canVasMenu.setVisibility(View.GONE);
-                }
-
-            }
-        });
-        chooseColor.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                AmbilWarnaDialog dialog = new AmbilWarnaDialog(RoomActivity.this, 100, new AmbilWarnaDialog.OnAmbilWarnaListener() {
-                    @Override
-                    public void onOk(AmbilWarnaDialog dialog, int color) {
-                        localColor = color;
-                        STROKE_WIDTH = 5f;
-                        previewColor.setBackgroundColor(color);
-                        collaborativeDrawingView.setSTROKE_WIDTH(STROKE_WIDTH);
-                        collaborativeDrawingView.setColor(localColor);
-                    }
-
-                    @Override
-                    public void onCancel(AmbilWarnaDialog dialog) {
-                        // cancel was selected by the user
-                        localColor = Color.BLACK;
-                        STROKE_WIDTH = 5f;
-                    }
-                });
-
-                dialog.show();
-            }
-        });
-
-        pencilButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AmbilWarnaDialog dialog = new AmbilWarnaDialog(RoomActivity.this, 100, new AmbilWarnaDialog.OnAmbilWarnaListener() {
-                    @Override
-                    public void onOk(AmbilWarnaDialog dialog, int color) {
-                        localColor = color;
-                        STROKE_WIDTH = 5f;
-                        previewColor.setBackgroundColor(color);
-                        collaborativeDrawingView.setSTROKE_WIDTH(STROKE_WIDTH);
-                        collaborativeDrawingView.setColor(localColor);
-                    }
-
-                    @Override
-                    public void onCancel(AmbilWarnaDialog dialog) {
-                        // cancel was selected by the user
-                        localColor = Color.BLACK;
-                        STROKE_WIDTH = 5f;
-                    }
-                });
-
-                dialog.show();
-            }
-        });
-
-        earaser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                localColor = Color.WHITE;
-                previewColor.setBackgroundColor(localColor);
-                STROKE_WIDTH = 20f;
-                collaborativeDrawingView.setSTROKE_WIDTH(STROKE_WIDTH);
-                collaborativeDrawingView.setColor(localColor);
-            }
-        });
-
-        crossDrawBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                collaborativeDrawingView.setVisibility(View.GONE);
-                collaborativeDrawingView.clear();
-                drawbtn.setImageResource(R.drawable.ic_baseline_brush_24);
-                canVasMenu.setVisibility(View.GONE);
-            }
-        });
+//        drawbtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if(collaborativeDrawingView.getVisibility()==View.GONE){
+//                    collaborativeDrawingView.setVisibility(View.VISIBLE);
+//                    canVasMenu.setVisibility(View.VISIBLE);
+//                    if(joinRoomNameTextView.getText()==null)
+//                        collaborativeDrawingView.setEnabled(false);
+//                    else
+//                        collaborativeDrawingView.setEnabled(true);
+//
+//                    collaborativeDrawingView.setListener(drawingViewListener);
+//                    drawbtn.setImageResource(R.drawable.ic_baseline_layers_clear_24);
+//                    if(room!=null){
+//                        for (RemoteParticipant remoteParticipant : room.getRemoteParticipants()) {
+//                            addRemoteParticipant(remoteParticipant);
+//                        }
+//                    }
+//
+//                }else {
+//                    collaborativeDrawingView.setVisibility(View.GONE);
+//                    collaborativeDrawingView.clear();
+//                    drawbtn.setImageResource(R.drawable.ic_baseline_brush_24);
+//                    canVasMenu.setVisibility(View.GONE);
+//                }
+//
+//            }
+//        });
+//        chooseColor.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                AmbilWarnaDialog dialog = new AmbilWarnaDialog(RoomActivity.this, 100, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+//                    @Override
+//                    public void onOk(AmbilWarnaDialog dialog, int color) {
+//                        localColor = color;
+//                        STROKE_WIDTH = 5f;
+//                        previewColor.setBackgroundColor(color);
+//                        collaborativeDrawingView.setSTROKE_WIDTH(STROKE_WIDTH);
+//                        collaborativeDrawingView.setColor(localColor);
+//                    }
+//
+//                    @Override
+//                    public void onCancel(AmbilWarnaDialog dialog) {
+//                        // cancel was selected by the user
+//                        localColor = Color.BLACK;
+//                        STROKE_WIDTH = 5f;
+//                    }
+//                });
+//
+//                dialog.show();
+//            }
+//        });
+//
+//        pencilButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                AmbilWarnaDialog dialog = new AmbilWarnaDialog(RoomActivity.this, 100, new AmbilWarnaDialog.OnAmbilWarnaListener() {
+//                    @Override
+//                    public void onOk(AmbilWarnaDialog dialog, int color) {
+//                        localColor = color;
+//                        STROKE_WIDTH = 5f;
+//                        previewColor.setBackgroundColor(color);
+//                        collaborativeDrawingView.setSTROKE_WIDTH(STROKE_WIDTH);
+//                        collaborativeDrawingView.setColor(localColor);
+//                    }
+//
+//                    @Override
+//                    public void onCancel(AmbilWarnaDialog dialog) {
+//                        // cancel was selected by the user
+//                        localColor = Color.BLACK;
+//                        STROKE_WIDTH = 5f;
+//                    }
+//                });
+//
+//                dialog.show();
+//            }
+//        });
+//
+//        earaser.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                localColor = Color.WHITE;
+//                previewColor.setBackgroundColor(localColor);
+//                STROKE_WIDTH = 20f;
+//                collaborativeDrawingView.setSTROKE_WIDTH(STROKE_WIDTH);
+//                collaborativeDrawingView.setColor(localColor);
+//            }
+//        });
+//
+//        crossDrawBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                collaborativeDrawingView.setVisibility(View.GONE);
+//                collaborativeDrawingView.clear();
+//                drawbtn.setImageResource(R.drawable.ic_baseline_brush_24);
+//                canVasMenu.setVisibility(View.GONE);
+//            }
+//        });
 
         chatButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1438,10 +1439,10 @@ public class RoomActivity extends BaseActivity {
             if (localAudioTrack != null) {
                 localParticipant.publishTrack(localAudioTrack);
             }
-            if(localDataTrack!=null){
-                LocalParticipant localParticipant = room.getLocalParticipant();
-                localParticipant.publishTrack(localDataTrack);
-            }
+//            if(localDataTrack!=null){
+//                LocalParticipant localParticipant = room.getLocalParticipant();
+//                localParticipant.publishTrack(localDataTrack);
+//            }
         }
     }
 
@@ -1578,30 +1579,28 @@ public class RoomActivity extends BaseActivity {
                 == PermissionChecker.PERMISSION_GRANTED;
     }
 
+//    private void addRemoteParticipant(final RemoteParticipant remoteParticipant) {
+//        // Observe remote participant events
+//        remoteParticipant.setListener(remoteParticipantListener());
+//
+//        for (final RemoteDataTrackPublication remoteDataTrackPublication :
+//                remoteParticipant.getRemoteDataTracks()) {
+//            /*
+//             * Data track messages are received on the thread that calls setListener. Post the
+//             * invocation of setting the listener onto our dedicated data track message thread.
+//             */
+//            if (remoteDataTrackPublication.isTrackSubscribed()) {
+//                dataTrackMessageThreadHandler.post(() -> addRemoteDataTrack(remoteParticipant,
+//                        remoteDataTrackPublication.getRemoteDataTrack()));
+//            }
+//        }
+//    }
 
-
-    private void addRemoteParticipant(final RemoteParticipant remoteParticipant) {
-        // Observe remote participant events
-        remoteParticipant.setListener(remoteParticipantListener());
-
-        for (final RemoteDataTrackPublication remoteDataTrackPublication :
-                remoteParticipant.getRemoteDataTracks()) {
-            /*
-             * Data track messages are received on the thread that calls setListener. Post the
-             * invocation of setting the listener onto our dedicated data track message thread.
-             */
-            if (remoteDataTrackPublication.isTrackSubscribed()) {
-                dataTrackMessageThreadHandler.post(() -> addRemoteDataTrack(remoteParticipant,
-                        remoteDataTrackPublication.getRemoteDataTrack()));
-            }
-        }
-    }
-
-    private void addRemoteDataTrack(RemoteParticipant remoteParticipant,
-                                    RemoteDataTrack remoteDataTrack) {
-        dataTrackRemoteParticipantMap.put(remoteDataTrack, remoteParticipant);
-        remoteDataTrack.setListener(remoteDataTrackListener());
-    }
+//    private void addRemoteDataTrack(RemoteParticipant remoteParticipant,
+//                                    RemoteDataTrack remoteDataTrack) {
+//        dataTrackRemoteParticipantMap.put(remoteDataTrack, remoteParticipant);
+//        remoteDataTrack.setListener(remoteDataTrackListener());
+//    }
 
     private RemoteParticipant.Listener remoteParticipantListener() {
         return new RemoteParticipant.Listener() {
@@ -1661,7 +1660,7 @@ public class RoomActivity extends BaseActivity {
                  * Data track messages are received on the thread that calls setListener. Post the
                  * invocation of setting the listener onto our dedicated data track message thread.
                  */
-                dataTrackMessageThreadHandler.post(() -> addRemoteDataTrack(remoteParticipant, remoteDataTrack));
+               // dataTrackMessageThreadHandler.post(() -> addRemoteDataTrack(remoteParticipant, remoteDataTrack));
             }
 
             @Override
@@ -1719,42 +1718,42 @@ public class RoomActivity extends BaseActivity {
         };
     }
 
-    private RemoteDataTrack.Listener remoteDataTrackListener() {
-        return new RemoteDataTrack.Listener() {
-            @Override
-            public void onMessage(RemoteDataTrack remoteDataTrack, ByteBuffer byteBuffer) {
-
-            }
-
-            @Override
-            public void onMessage(RemoteDataTrack remoteDataTrack, String message) {
-                Log.d("Remote Data>>>>>>>>>>>", "onMessage: " + message);
-                MotionMessage motionMessage = MotionMessage.fromJson(message);
-
-                if (motionMessage != null) {
-                    RemoteParticipant remoteParticipant = dataTrackRemoteParticipantMap
-                            .get(remoteDataTrack);
-                    int actionEvent = (motionMessage.actionDown) ?
-                            (MotionEvent.ACTION_DOWN) :
-                            MotionEvent.ACTION_UP;
-
-                    // Process remote drawing event
-                    float projectedX = motionMessage.coordinates.first *
-                            (float) collaborativeDrawingView.getWidth();
-                    float projectedY = motionMessage.coordinates.second *
-                            (float) collaborativeDrawingView.getHeight();
-                    int color = motionMessage.color;
-                    float width = motionMessage.STROKE_WIDTH;
-                    collaborativeDrawingView.onRemoteTouchEvent(remoteParticipant,
-                            actionEvent,
-                            projectedX,
-                            projectedY,color,width);
-                } else {
-                    Log.e("Remote Data>>>>>>>", "Failed to deserialize message: " + message);
-                }
-            }
-        };
-    }
+//    private RemoteDataTrack.Listener remoteDataTrackListener() {
+//        return new RemoteDataTrack.Listener() {
+//            @Override
+//            public void onMessage(RemoteDataTrack remoteDataTrack, ByteBuffer byteBuffer) {
+//
+//            }
+//
+//            @Override
+//            public void onMessage(RemoteDataTrack remoteDataTrack, String message) {
+//                Log.d("Remote Data>>>>>>>>>>>", "onMessage: " + message);
+//                MotionMessage motionMessage = MotionMessage.fromJson(message);
+//
+//                if (motionMessage != null) {
+//                    RemoteParticipant remoteParticipant = dataTrackRemoteParticipantMap
+//                            .get(remoteDataTrack);
+//                    int actionEvent = (motionMessage.actionDown) ?
+//                            (MotionEvent.ACTION_DOWN) :
+//                            MotionEvent.ACTION_UP;
+//
+//                    // Process remote drawing event
+//                    float projectedX = motionMessage.coordinates.first *
+//                            (float) collaborativeDrawingView.getWidth();
+//                    float projectedY = motionMessage.coordinates.second *
+//                            (float) collaborativeDrawingView.getHeight();
+//                    int color = motionMessage.color;
+//                    float width = motionMessage.STROKE_WIDTH;
+//                    collaborativeDrawingView.onRemoteTouchEvent(remoteParticipant,
+//                            actionEvent,
+//                            projectedX,
+//                            projectedY,color,width);
+//                } else {
+//                    Log.e("Remote Data>>>>>>>", "Failed to deserialize message: " + message);
+//                }
+//            }
+//        };
+//    }
 
 
 }

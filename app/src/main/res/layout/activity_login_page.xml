@@ -78,7 +78,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@drawable/edit_text_border"
-                    android:hint="Enter E Mail OR Phone"
+                    android:hint="Enter email or phone"
                     android:inputType="textEmailAddress"
                     android:padding="10dp"
                     android:layout_marginTop="2dp"
@@ -109,7 +109,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@drawable/edit_text_border"
-                    android:hint="Your Password"
+                    android:hint="Your password"
                     android:inputType="textPassword"
                     android:padding="10dp"
                     android:textColorHint="@color/lobbyColorAccent" />
@@ -134,7 +134,7 @@
                 android:background="@drawable/button_back_primarycolor"
                 android:paddingLeft="40dp"
                 android:paddingRight="40dp"
-                android:text="Log In"
+                android:text="Login"
                 android:textAllCaps="false"
                 android:textColor="#ffffff"
                 android:textSize="22dp" />

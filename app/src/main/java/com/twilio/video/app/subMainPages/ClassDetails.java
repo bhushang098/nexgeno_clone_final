@@ -746,7 +746,7 @@ ClassDetails extends AppCompatActivity {
 
                             if(response.body().getMessage().equalsIgnoreCase("Success"))
                             {
-                                showSuccessJoinMess(classobj.getName() +"  Class Joined Successfully");
+                                showSuccessJoinMess("  Class Joined Successfully");
                             }else
                             {
                                 showSuccessJoinMess("You Left "+ classobj.getName() +" Class ");
@@ -785,7 +785,7 @@ ClassDetails extends AppCompatActivity {
             } else {
                 //setupLocalMedia();
 
-                //Store class Id in Asared prefs Fort temp Time
+                //Store class Id in A sared prefs Fort temp Time
                 gteClassIdForprefs(token, classId);
 
             }
@@ -893,7 +893,6 @@ ClassDetails extends AppCompatActivity {
                             i.putExtra("room_name", classobj.getName());
                             i.putExtra("token",token);
                             i.putExtra("classId",String.valueOf(classId));
-
                             startActivity(i);
                         }
 
@@ -934,7 +933,7 @@ ClassDetails extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 joinSuccessDialog.dismiss();
-                finish();
+                //finish();
             }
         });
 

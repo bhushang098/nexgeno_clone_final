@@ -1,18 +1,27 @@
 package com.twilio.video.app.MainPages;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
+import com.twilio.video.app.ApiModals.MakeClassResponse;
 import com.twilio.video.app.ApiModals.UserObj;
 import com.twilio.video.app.R;
 import com.twilio.video.app.RetrifitClient;
@@ -38,14 +47,16 @@ public class SettingsActivity extends AppCompatActivity {
     String name, email, location, skill, userName, roleStr, genderStr, currentPass, newPass1, newPass2;
     EditText etName, etMail, etLocation, etSkill, etUsername, etCurrentPass, etNewPass1, etnewPass2;
     TextView tvUpdateAccountSettings, tvUpdatePrivateAccnt, tvUpdateUserName,
-            tvUpdateProfessor, tvUpdateGender, tvUpdatePass;
+            tvUpdateProfessor, tvUpdatePass,tvApplyHr,hrStatus,proStatus;
+    CardView cvprosetting,cvhrsetting;
 
     CheckBox chkPrivate,chkGraphic,chkAi,chkcn,chkPython;
     List<String> interests = new ArrayList<String>();
 
     String token;
     Data userObj = new Data();
-
+    PopupWindow progressPopu;
+ImageView ivback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +67,12 @@ public class SettingsActivity extends AppCompatActivity {
         setSpinnerAdalters();
         getUserByApi();
 
+        ivback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         spinRole.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -109,7 +126,7 @@ public class SettingsActivity extends AppCompatActivity {
                     etSkill.setError("Fill out This Field");
 
 
-                if(spinGender.getSelectedItemPosition()==1)
+                if(spinGender.getSelectedItemPosition()==0)
                 {
                     genderStr = "1";
                 }else {
@@ -124,6 +141,20 @@ public class SettingsActivity extends AppCompatActivity {
                     updateAccountSettings();
                 }
 
+            }
+        });
+
+        tvApplyHr.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(tvApplyHr.getText().toString().equalsIgnoreCase("Apply"))
+                {
+                    //TODO Apply For Hr By Api
+                    applyForHrByApi();
+
+                }else {
+                    //already Applied For Hr
+                }
             }
         });
 
@@ -150,17 +181,12 @@ public class SettingsActivity extends AppCompatActivity {
         tvUpdateProfessor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(tvUpdateProfessor.getText().toString().equalsIgnoreCase("Apply"))
                     updateRole();
                 //ToDo Update Role by Passing  roleStr
             }
         });
 
-        tvUpdateGender.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateAccountSettings();
-            }
-        });
 
         tvUpdatePass.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,6 +211,43 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
 
+    }
+
+    private void applyForHrByApi() {
+        startProgressPopup(this);
+        Call<MakeClassResponse> call = RetrifitClient.getInstance()
+                .getSettingsApi().applyForHr(token);
+
+        call.enqueue(new Callback<MakeClassResponse>() {
+            @Override
+            public void onResponse(Call<MakeClassResponse> call, Response<MakeClassResponse> response) {
+                Log.d("Response>>",response.raw().toString());
+                progressPopu.dismiss();
+
+                if(response.body()!=null)
+                {
+                    if(response.body().getStatus())
+                    {
+
+                        tvApplyHr.setTextSize(14f);
+                        tvApplyHr.setText("Your Application is Under Review");
+                        tvApplyHr.setTextColor(Color.BLACK);
+                        tvApplyHr.setElevation(0f);
+                    }else {
+                        Toast.makeText(SettingsActivity.this, response.message().toString(), Toast.LENGTH_SHORT).show();
+                    }
+
+                }else {
+                    Toast.makeText(SettingsActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MakeClassResponse> call, Throwable t) {
+                progressPopu.dismiss();
+            }
+        });
     }
 
     private void updatePassword() {
@@ -218,8 +281,17 @@ public class SettingsActivity extends AppCompatActivity {
 
     }
 
+    private  void  startProgressPopup(Context context){
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        View popUpView = inflater.inflate(R.layout.progres_popup,
+                null); // inflating popup layout
+        progressPopu = new PopupWindow(popUpView, ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        progressPopu.setAnimationStyle(android.R.style.Animation_Dialog);
+        progressPopu.showAtLocation(popUpView, Gravity.CENTER, 0, 0);
+    }
     private void updateRole() {
-
+startProgressPopup(this);
         Call<SettingsResponse> call = RetrifitClient.getInstance()
                 .getSettingsApi().applyPro(token);
 
@@ -227,13 +299,18 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SettingsResponse> call, Response<SettingsResponse> response) {
                 Log.d("Tag>response >>", response.raw().toString());
-
+progressPopu.dismiss();
                 if(response.body()!=null)
                 {
                     if (response.body().getStatus())
                     {
-                        finish();
+
+                        tvUpdateProfessor.setBackgroundColor(Color.WHITE);
+                        tvUpdateProfessor.setTextColor(Color.BLACK);
+                        tvUpdateProfessor.setElevation(0f);
+                        tvUpdateProfessor.setText(response.body().getMessage());
                         Toast.makeText(SettingsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
                     }else {
                         Toast.makeText(SettingsActivity.this, "Error Updating ", Toast.LENGTH_SHORT).show();
                     }
@@ -242,7 +319,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<SettingsResponse> call, Throwable t) {
-
+progressPopu.dismiss();
             }
         });
     }
@@ -369,14 +446,59 @@ public class SettingsActivity extends AppCompatActivity {
         {
             chkPrivate.setChecked(true);
         }
+        if(userObj.getGender()==1)
+            spinGender.setSelection(0);
+        else
+            spinGender.setSelection(1);
+
         etUsername.setText(userObj.getUsername());
 
         if(userObj.getUserType()==1)
         {
-            spinRole.setSelection(1);
+            cvprosetting.setVisibility(View.GONE);
+            proStatus.setVisibility(View.VISIBLE);
+            proStatus.setText("Your application for professor is approved");
+//            tvUpdateProfessor.setBackgroundColor(Color.WHITE);
+//            tvUpdateProfessor.setTextColor(Color.BLACK);
+//            tvUpdateProfessor.setElevation(0f);
+            //spinRole.setSelection(1);
         }
-        if(userObj.getSex()==1)
-            spinGender.setSelection(1);
+        if(userObj.getUserType()==2)
+        {
+            cvprosetting.setVisibility(View.GONE);
+            proStatus.setVisibility(View.VISIBLE);
+            proStatus.setText("Your Application For Professor under Review");
+//            tvUpdateProfessor.setBackgroundColor(Color.WHITE);
+//            tvUpdateProfessor.setText("Your Application under Review");
+//            tvUpdateProfessor.setBackgroundColor(Color.WHITE);
+//            tvUpdateProfessor.setTextColor(Color.BLACK);
+//            tvUpdateProfessor.setElevation(0f);
+        }
+
+
+        if(userObj.getIs_hr()==2)
+        {
+            cvhrsetting.setVisibility(View.GONE);
+            hrStatus.setVisibility(View.VISIBLE);
+            hrStatus.setText("Your Application for HR is Under Review");
+//            tvApplyHr.setTextSize(14f);
+//            tvApplyHr.setText("Your Application is Under Review");
+//            tvApplyHr.setTextColor(Color.BLACK);
+//            tvApplyHr.setBackgroundColor(Color.WHITE);
+//            tvApplyHr.setElevation(0f);
+        }
+
+        if(userObj.getIs_hr()==1)
+        {
+            cvhrsetting.setVisibility(View.GONE);
+            hrStatus.setVisibility(View.VISIBLE);
+            hrStatus.setText("Your application for HR is approved");
+//            tvApplyHr.setTextSize(14f);
+//            tvApplyHr.setText("Your application for Hr is approved");
+//            tvApplyHr.setTextColor(Color.BLACK);
+//            tvApplyHr.setBackgroundColor(Color.WHITE);
+//            tvApplyHr.setElevation(0f);
+        }
 
         if (userObj.getInterests().isEmpty()) {
 
@@ -400,9 +522,12 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
 
+
     }
 
     private void setUi() {
+
+        ivback = findViewById(R.id.iv_back_settings);
         spinRole = findViewById(R.id.spinner_role);
         spinGender = findViewById(R.id.spinner_gender);
         graphicDesign = findViewById(R.id.chk_graphic_design);
@@ -423,8 +548,13 @@ public class SettingsActivity extends AppCompatActivity {
         tvUpdatePrivateAccnt = findViewById(R.id.tv_update_private_account);
         tvUpdateUserName = findViewById(R.id.tv_update_user_name);
         tvUpdateProfessor = findViewById(R.id.tv_user_role_update);
-        tvUpdateGender = findViewById(R.id.tv_user_gender_setting);
         tvUpdatePass = findViewById(R.id.tv_update_pass);
+        tvApplyHr = findViewById(R.id.tv_hr_update);
+
+        proStatus = findViewById(R.id.tv_pro_Accnt_status);
+        hrStatus = findViewById(R.id.tv_hr_Accnt_status);
+        cvprosetting =findViewById(R.id.cv_user_role_settings);
+        cvhrsetting = findViewById(R.id.cv_hr_setting_card);
 
         chkPrivate = findViewById(R.id.chk_private_account);
         chkGraphic = findViewById(R.id.chk_graphic_design);

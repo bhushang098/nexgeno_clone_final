@@ -6,9 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -34,7 +31,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.PopupWindow;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,16 +55,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.gson.Gson;
-import com.onesignal.OSNotification;
-import com.onesignal.OSNotificationAction;
-import com.onesignal.OSNotificationOpenResult;
 import com.onesignal.OneSignal;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 import com.twilio.video.BuildConfig;
-import com.twilio.video.app.ApiModals.MakeClassResponse;
 import com.twilio.video.app.ApiModals.MakeNewPostResponse;
 import com.twilio.video.app.ApiModals.UserObj;
 import com.twilio.video.app.ChatUserResponse.ChatUserResponse;
@@ -87,16 +79,12 @@ import com.twilio.video.app.MainPages.StudentsUserPage;
 import com.twilio.video.app.MainPages.TeamsPage;
 import com.twilio.video.app.MainPages.UsersPage;
 import com.twilio.video.app.NotificationAlertResponse.NotificationAlerrtResponse;
-import com.twilio.video.app.adapter.ChatUSerAdapter;
 import com.twilio.video.app.adapter.HomePostsAdapter;
-import com.twilio.video.app.subMainPages.ClassDetails;
-import com.twilio.video.app.util.NetworkOperator;
 
 import net.alhazmy13.mediapicker.Image.ImagePicker;
 import net.alhazmy13.mediapicker.Video.VideoPicker;
 
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -106,14 +94,11 @@ import java.util.Map;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import ru.nikartm.support.BadgePosition;
 import ru.nikartm.support.ImageBadgeView;
-
-import static tvi.webrtc.ContextUtils.getApplicationContext;
 
 public class HomePage extends AppCompatActivity{
     Toolbar toolbar;
@@ -303,10 +288,9 @@ public class HomePage extends AppCompatActivity{
                     case R.id.nav_skill:
                         startActivity(new Intent(HomePage.this, SkillPage.class));
                         overridePendingTransition(0, 0);
-
                         break;
-                    case R.id.nav_teams:
-                        startActivity(new Intent(HomePage.this, TeamsPage.class));
+                    case R.id.nav_jobs_bottom:
+                        startActivity(new Intent(HomePage.this, JobsPage.class));
                         overridePendingTransition(0, 0);
 
                         break;
@@ -401,8 +385,8 @@ public class HomePage extends AppCompatActivity{
 
                     case R.id.log_out:
                         ConformationDialog conformationDialog = new ConformationDialog(HomePage.this);
-                        conformationDialog.showConformDialog(HomePage.this,"LogOut",
-                                "Do You Really Want To Log Out Of NexGeno","log_out");
+                        conformationDialog.showConformDialog(HomePage.this,"Logout and exit app?",
+                                "  ","log_out");
                         break;
                     case R.id.nav_users_pro:
                         fabHodeNav.setVisibility(View.GONE);

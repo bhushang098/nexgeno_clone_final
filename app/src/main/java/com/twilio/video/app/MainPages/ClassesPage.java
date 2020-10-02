@@ -114,8 +114,8 @@ public class ClassesPage extends AppCompatActivity {
                         overridePendingTransition(0, 0);
                         finish();
                         break;
-                    case R.id.nav_teams:
-                        startActivity(new Intent(ClassesPage.this, TeamsPage.class));
+                    case R.id.nav_jobs_bottom:
+                        startActivity(new Intent(ClassesPage.this, JobsPage.class));
                         overridePendingTransition(0, 0);
                         finish();
                         break;

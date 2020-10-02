@@ -1,12 +1,14 @@
 package com.twilio.video.app.MainPages;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -37,6 +39,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.gson.Gson;
 import com.twilio.video.app.ApiModals.MakeClassResponse;
 import com.twilio.video.app.ApiModals.UserObj;
@@ -55,6 +58,7 @@ import com.twilio.video.app.subMainPages.FollowersPage;
 import com.twilio.video.app.subMainPages.FollowingPage;
 import com.twilio.video.app.subMainPages.PostsPage;
 
+import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -67,11 +71,11 @@ import retrofit2.Response;
 
 public class OtherUserProfile extends AppCompatActivity {
 
-    ImageView coverPhoto, iveditRating, ivChat, ivGender;
+    ImageView coverPhoto, iveditRating, ivGender,ivquote,ivlocation;
     CircleImageView profilPic;
     CardView cvFollowunFollow, cvCompany;
-    LinearLayout latoutProRating, layoutInterests;
-    TextView username, gender, location, tvUserNameOnTb, tvSkill,tvFollowToggle;
+    LinearLayout latoutProRating;
+    TextView username, gender, location, tvUserNameOnTb, tvSkill,tvFollowToggle,phone,bio;
     TextView tvPosts, tvFollowings, tvFollowers,tvNoPost;
     private static String PREFS_NAME = "login_preferences";
     Data otherUserObj = new Data();
@@ -92,6 +96,9 @@ public class OtherUserProfile extends AppCompatActivity {
 
     RatingBar ratingBar;
     TextView tvRating,tvSkillOthers;
+    FloatingActionButton fabChat,fabFollowToggle;
+    PopupWindow progressPopup;
+    TextView interests;
 
     private void loadPreferences() {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME,
@@ -100,6 +107,16 @@ public class OtherUserProfile extends AppCompatActivity {
         thisUserObj = json.fromJson(settings.getString("UserObj", ""), UserObj.class);
         hisUserId = thisUserObj.getId();
         chatItemAdapter = new ChatItemAdapter(detailedChatList,getApplicationContext(),String.valueOf(hisUserId));
+    }
+
+    private  void  startProgressPopup(Context context){
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        View popUpView = inflater.inflate(R.layout.progres_popup,
+                null); // inflating popup layout
+        progressPopup = new PopupWindow(popUpView, ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        progressPopup.setAnimationStyle(android.R.style.Animation_Dialog);
+        progressPopup.showAtLocation(popUpView, Gravity.CENTER, 0, 0);
     }
 
     @Override
@@ -114,8 +131,7 @@ public class OtherUserProfile extends AppCompatActivity {
         getuserById(getIntent().getStringExtra("other_user_id"));
         loadUserPosts(getIntent().getStringExtra("other_user_id"));
 
-
-        ivChat.setOnClickListener(new View.OnClickListener() {
+        fabChat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startChat();
@@ -131,39 +147,13 @@ public class OtherUserProfile extends AppCompatActivity {
         cvFollowunFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Call<MakeClassResponse> call = RetrifitClient.getInstance()
-                        .getUserApi().
-                                followOrUnFollow("users/follow_switch/"+String.valueOf(otherUserObj.getId()),token);
-
-                call.enqueue(new Callback<MakeClassResponse>() {
-                    @Override
-                    public void onResponse(Call<MakeClassResponse> call, Response<MakeClassResponse> response) {
-                        Log.d("response>>",response.raw().toString());
-                        if(response.body()!=null)
-                        {
-                            if(response.body().getStatus())
-                            {
-                                if(tvFollowToggle.getText().toString()
-                                        .equalsIgnoreCase("Follow")){
-                                    tvFollowToggle.setText("Unfollow");
-                                }else
-                                {
-                                    tvFollowToggle.setText("Follow");
-                                }
-
-                                Toast.makeText(OtherUserProfile.this, " "+
-                                        response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void onFailure(Call<MakeClassResponse> call, Throwable t) {
-
-                        Log.d("exception>>",t.toString());
-                    }
-                });
+               followToggle();
+            }
+        });
+        fabFollowToggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                followToggle();
             }
         });
 
@@ -204,6 +194,44 @@ public class OtherUserProfile extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void followToggle() {
+        startProgressPopup(OtherUserProfile.this);
+        Call<MakeClassResponse> call = RetrifitClient.getInstance()
+                .getUserApi().
+                        followOrUnFollow("users/follow_switch/"+String.valueOf(otherUserObj.getId()),token);
+
+        call.enqueue(new Callback<MakeClassResponse>() {
+            @Override
+            public void onResponse(Call<MakeClassResponse> call, Response<MakeClassResponse> response) {
+                Log.d("response>>",response.raw().toString());
+                progressPopup.dismiss();
+                if(response.body()!=null)
+                {
+                    if(response.body().getStatus())
+                    {
+                        if(tvFollowToggle.getText().toString()
+                                .equalsIgnoreCase("Follow")){
+                            tvFollowToggle.setText("Unfollow");
+                        }else
+                        {
+                            tvFollowToggle.setText("Follow");
+                        }
+
+                        Toast.makeText(OtherUserProfile.this, " "+
+                                response.body().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<MakeClassResponse> call, Throwable t) {
+progressPopup.dismiss();
+                Log.d("exception>>",t.toString());
+            }
+        });
     }
 
     private void getuserById(String other_user_id) {
@@ -465,8 +493,14 @@ public class OtherUserProfile extends AppCompatActivity {
         latoutProRating = findViewById(R.id.lin_lay_other_user_pro_rating);
         iveditRating = findViewById(R.id.iv_edit_pro_rating);
         cvCompany = findViewById(R.id.cv_profile_company_other);
-        layoutInterests = findViewById(R.id.lin_lay_other_user_interests);
-        ivChat = findViewById(R.id.iv_chat_other_user);
+        phone = findViewById(R.id.tv_user_phone_on_profile_other);
+        bio = findViewById(R.id.tv_user_bio_on_profile_other);
+        interests = findViewById(R.id.tv_interests_others);
+        ivquote = findViewById(R.id.iv_quote_others);
+        ivlocation = findViewById(R.id.iv_location_other);
+        //Fabs
+        fabChat = findViewById(R.id.fab_chat_other_user);
+        fabFollowToggle = findViewById(R.id.fab_follow_un_follow);
         tvSkill = findViewById(R.id.tv_other_user_skill);
         ivGender = findViewById(R.id.iv_other_user_gender);
         tvPosts = findViewById(R.id.tv_post_no_other);
@@ -521,16 +555,33 @@ public class OtherUserProfile extends AppCompatActivity {
         }
 
         username.setText(otherUserObj.getName());
-        location.setText(" " + otherUserObj.getLocation());
-        if (otherUserObj.getSkill() != null) {
-            tvSkill.setText("" + otherUserObj.getSkill());
+        phone.setText(otherUserObj.getPhone());
+        if(otherUserObj.getBio()!=null)
+        bio.setText(otherUserObj.getBio());
+        else{
+            ivquote.setVisibility(View.GONE);
+            bio.setVisibility(View.GONE);
         }
 
-        if (otherUserObj.getSex() == 0) {
-            gender.setText(" Male");
-        } else {
-            gender.setText(" Female");
+        if(otherUserObj.getLocation()!=null)
+        location.setText(otherUserObj.getLocation());
+        else{
+            location.setVisibility(View.GONE);
+            ivlocation.setVisibility(View.GONE);
+        }
+
+        if (otherUserObj.getSkill() != null) {
+            tvSkill.setText(otherUserObj.getSkill());
+        }else {
+            tvSkill.setText(" ");
+        }
+
+        if (otherUserObj.getGender() == 0) {
+            gender.setText("Female");
             ivGender.setImageResource(R.drawable.female);
+        } else {
+            gender.setText("Male");
+
         }
         tvUserNameOnTb.setText(otherUserObj.getName());
         if(otherUserObj.getUserType()==1)
@@ -558,55 +609,26 @@ public class OtherUserProfile extends AppCompatActivity {
 
         } else {
             String[] interestsAry = otherUserObj.getInterests().split("\"");
+            String interestsString = "";
 
             for (int i = 1; i < interestsAry.length; i++) {
-                addCardInalyout(interestsAry[i]);
+                if(interestsAry[i].length()>1)
+                {
+                    interestsString = interestsString + interestsAry[i]+"<b>"+", "+"</b>";
+                }
             }
+
+            interests.setText(Html.fromHtml(interestsString));
+            interests.setText(interests.getText().toString().
+                    substring(0,interests.getText().toString().length()-2));
+
         }
+
         tvFollowers.setText(String.valueOf(followerList.size()));
         tvFollowings.setText(String.valueOf(followingsList.size()));
 
     }
 
-    @SuppressLint("ResourceAsColor")
-    private void addCardInalyout(String s) {
-        CardView cardview = new CardView(this);
-
-        ViewGroup.LayoutParams layoutparams = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
-
-        cardview.setLayoutParams(layoutparams);
-
-        cardview.setRadius(5);
-
-        // cardview.setPadding(15, 2, 15, 2);
-        cardview.setForegroundGravity(Gravity.CENTER);
-
-        cardview.setCardElevation(5);
-
-        TextView textview = new TextView(this);
-
-        textview.setLayoutParams(layoutparams);
-
-        textview.setText(s);
-        textview.setTextSize(14);
-
-        textview.setTextColor(Color.WHITE);
-        textview.setBackgroundColor(R.color.cardDarkBackground);
-
-        textview.setPadding(25, 5, 25, 5);
-
-        textview.setGravity(Gravity.CENTER);
-
-        cardview.addView(textview);
-        if (s.length() > 1) {
-            layoutInterests.addView(cardview);
-            layoutInterests.addView(new TextView(this));
-        }
-
-    }
 
     private void loadUserPosts(String otherUserId) {
 

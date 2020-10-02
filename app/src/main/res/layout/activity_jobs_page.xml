@@ -86,4 +86,18 @@
 
     </RelativeLayout>
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:id="@+id/bottom_job"
+        android:padding="1dp"
+        app:labelVisibilityMode="labeled"
+        android:layout_alignParentBottom="true"
+        android:fitsSystemWindows="true"
+        android:backgroundTint="@android:color/white"
+        app:itemBackground="@android:color/white"
+        android:background="?android:attr/windowBackground"
+        android:layout_gravity="bottom"
+        app:menu="@menu/main_menu"/>
+
 </FrameLayout>

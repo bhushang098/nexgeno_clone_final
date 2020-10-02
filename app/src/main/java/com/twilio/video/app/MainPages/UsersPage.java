@@ -3,6 +3,8 @@ package com.twilio.video.app.MainPages;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +28,7 @@ public class UsersPage extends AppCompatActivity {
     private UsersTabAdapter adapter;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    LinearLayout linLayTeamsGo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,13 @@ public class UsersPage extends AppCompatActivity {
                 toolbar.setTitle("Students");
             }
         }
+
+        linLayTeamsGo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(UsersPage.this,TeamsPage.class));
+            }
+        });
 
 
         setSupportActionBar(toolbar);
@@ -76,8 +86,8 @@ public class UsersPage extends AppCompatActivity {
                         overridePendingTransition(0, 0);
                         finish();
                         break;
-                    case R.id.nav_teams:
-                        startActivity(new Intent(UsersPage.this, TeamsPage.class));
+                    case R.id.nav_jobs_bottom:
+                        startActivity(new Intent(UsersPage.this, JobsPage.class));
                         overridePendingTransition(0, 0);
                         finish();
                         break;
@@ -100,6 +110,7 @@ public class UsersPage extends AppCompatActivity {
         toolbar = findViewById(R.id.tbUsers);
         viewPager = (ViewPager) findViewById(R.id.vpg_users);
         tabLayout = (TabLayout) findViewById(R.id.tbl_users);
+        linLayTeamsGo = findViewById(R.id.lin_lay_teams_go);
     }
 }
 

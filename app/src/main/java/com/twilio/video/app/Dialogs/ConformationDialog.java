@@ -1,6 +1,7 @@
 package com.twilio.video.app.Dialogs;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -64,6 +65,10 @@ public class ConformationDialog {
     }
 
     private static void callJobApplyApi(String jobId,String token) {
+        ProgressDialog progressDialog = new
+                ProgressDialog(context);
+        progressDialog.setMessage("Applying....");
+        progressDialog.show();
         Call<MakeClassResponse> call = RetrifitClient.getInstance()
                 .gteJobsApi().applyJob("job/"+jobId+"/apply",token);
 
@@ -71,7 +76,8 @@ public class ConformationDialog {
             @Override
             public void onResponse(Call<MakeClassResponse> call, Response<MakeClassResponse> response) {
                 Log.d("Response>>",response.raw().toString());
-                Toast.makeText(context, "Requested Job Apply", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context, "Requested Job Apply", Toast.LENGTH_SHORT).show();
+                progressDialog.hide();
                 if(response.body()!=null)
                 {
                     if(response.body().getStatus())
@@ -85,6 +91,7 @@ public class ConformationDialog {
 
             @Override
             public void onFailure(Call<MakeClassResponse> call, Throwable t) {
+                progressDialog.hide();
                 Log.d("Error>>",t.toString());
                 Toast.makeText(context, t.toString(), Toast.LENGTH_SHORT).show();
             }

@@ -106,7 +106,7 @@ public class ChatUSerAdapter extends RecyclerView.Adapter<ChatUSerAdapter.ChatUS
             } else {
                 holder.userName.setText(userList.get(position).getSender().getName());
                 if (userList.get(position).getSender().getProfile_path() != null) {
-                    Glide.with(context).load("https://virtualskill0.s3.ap-southeast-1.amazonaws.com/public/uploads/profile_photos/"
+                    Glide.with(context).load("https://nexgeno.com/public/uploads/profile_photos/"
                             + userList.get(position).getSender().getProfile_path())
                             .listener(new RequestListener<Drawable>() {
                                 @Override
@@ -162,7 +162,6 @@ public class ChatUSerAdapter extends RecyclerView.Adapter<ChatUSerAdapter.ChatUS
 
 
         holder.message.setText(userList.get(position).getContent());
-
         try {
             long time = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(userList.get(position).getCreatedAt()).getTime();
             holder.timeStamp.setText(new TimeService().getTimeAgo(time, System.currentTimeMillis()));
@@ -258,6 +257,7 @@ public class ChatUSerAdapter extends RecyclerView.Adapter<ChatUSerAdapter.ChatUS
         recyclerView = popUpView.findViewById(R.id.rec_view_detailed_chat_with_user);
         ImageView ivSend = popUpView.findViewById(R.id.iv_send_chat_message);
         ImageView ivback = popUpView.findViewById(R.id.iv_toggle_chat_on_popup);
+        ImageView ivemoji = popUpView.findViewById(R.id.iv_emojy_keyboard);
         TextView tvOtherUserName = popUpView.findViewById(R.id.tv_chat_with_user_name);
         tvOtherUserName.setText(name);
         mopoup.setAnimationStyle(android.R.style.Animation_Dialog);
@@ -265,6 +265,13 @@ public class ChatUSerAdapter extends RecyclerView.Adapter<ChatUSerAdapter.ChatUS
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         recyclerView.setAdapter(chatItemAdapter);
 
+        ivemoji.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(INPUT_METHOD_SERVICE);
+
+            }
+        });
         ivback.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

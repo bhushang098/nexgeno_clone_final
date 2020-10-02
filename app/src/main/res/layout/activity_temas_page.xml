@@ -136,11 +136,11 @@
 <!--        </LinearLayout>-->
 <!--    </androidx.cardview.widget.CardView>-->
 
-
     </RelativeLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"
+        android:visibility="gone"
         android:layout_height="60dp"
         android:id="@+id/bottom_team"
         android:padding="1dp"

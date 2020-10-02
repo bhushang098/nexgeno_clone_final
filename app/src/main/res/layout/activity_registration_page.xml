@@ -68,7 +68,7 @@
                     android:textColorHint="@color/lobbyColorAccent"
                     android:layout_width="match_parent"
                     android:inputType="textPersonName"
-                    android:hint="Full Name "
+                    android:hint="Full name "
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -92,7 +92,7 @@
                     android:textColorHint="@color/lobbyColorAccent"
                     android:layout_width="match_parent"
                     android:inputType="textEmailAddress"
-                    android:hint="E Mail"
+                    android:hint="email"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -168,7 +168,7 @@
                     android:textColorHint="@color/lobbyColorAccent"
                     android:layout_width="match_parent"
                     android:inputType="textPassword"
-                    android:hint="Confirm Password"
+                    android:hint="Confirm password"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>

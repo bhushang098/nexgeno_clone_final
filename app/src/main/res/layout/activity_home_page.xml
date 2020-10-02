@@ -64,15 +64,15 @@
                         android:layout_width="40dp"
                         android:layout_height="40dp"
                         android:padding="4dp"
-                        app:srcCompat="@drawable/ic_baseline_notifications_active_24"/>
+                        app:srcCompat="@drawable/ic_baseline_notifications_24"/>
 
                     <ru.nikartm.support.ImageBadgeView
                         android:layout_gravity="end"
                         android:id="@+id/iv_go_chat_screen"
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:padding="4dp"
-                        app:srcCompat="@drawable/ic_baseline_message_white_24"/>
+                        android:padding="6dp"
+                        app:srcCompat="@drawable/messages_icon"/>
 
                 </LinearLayout>
 

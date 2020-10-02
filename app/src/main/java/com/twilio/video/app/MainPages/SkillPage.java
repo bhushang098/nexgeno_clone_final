@@ -105,8 +105,8 @@ public class SkillPage extends AppCompatActivity {
                         break;
                     case R.id.nav_skill:
                         break;
-                    case R.id.nav_teams:
-                        startActivity(new Intent(SkillPage.this, TeamsPage.class));
+                    case R.id.nav_jobs_bottom:
+                        startActivity(new Intent(SkillPage.this, JobsPage.class));
                         overridePendingTransition(0, 0);
                         finish();
                         break;

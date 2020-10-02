@@ -594,17 +594,16 @@
                 android:id="@+id/tv_class_post_nt_available"
                 android:textSize="20dp"
                 android:gravity="center"
-                android:layout_below="@id/cv_class_host_join"
+                android:layout_below="@id/cv_card_post_utils_on_class_details"
                 android:text="No Post To Show"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rec_view_class_posts"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_below="@+id/cv_card_post_utils_on_class_details"
-                android:layout_marginTop="648dp"
+                android:layout_below="@+id/tv_class_post_nt_available"
+                android:layout_marginTop="5dp"
                 android:padding="5dp">
-
 
             </androidx.recyclerview.widget.RecyclerView>
 

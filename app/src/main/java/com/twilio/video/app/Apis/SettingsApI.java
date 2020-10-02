@@ -11,6 +11,7 @@ import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
@@ -76,5 +77,10 @@ public interface SettingsApI {
             @Field("teacher_id") String teacherId,
             @Field("rating") String rating,
             @Field("review") String review
+    );
+
+    @GET("apply_for_hr")
+    Call<MakeClassResponse> applyForHr(
+            @Query("token") String token
     );
 }

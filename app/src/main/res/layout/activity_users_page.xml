@@ -13,6 +13,41 @@
         android:layout_height="50dp"
         app:titleTextColor="#ffffff"
         android:id="@+id/tbUsers">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight="2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+            <LinearLayout
+                android:id="@+id/lin_lay_teams_go"
+                android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:layout_width="40dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_group_white_24"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Teams"
+                    android:textColor="@color/colorWhite"/>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
 
     </androidx.appcompat.widget.Toolbar>
 

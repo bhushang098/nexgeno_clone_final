@@ -1,15 +1,20 @@
 package com.twilio.video.app.MainPages;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
+import com.twilio.video.app.HomePage;
 import com.twilio.video.app.R;
 import com.twilio.video.app.adapter.SkillTabsAdapter;
 import com.twilio.video.app.subMainPages.AppliedJobsFrag;
@@ -46,6 +51,43 @@ public class JobsPage extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_job);
+        bottomNavigationView.setSelectedItemId(R.id.nav_jobs_bottom);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+                switch (item.getItemId()) {
+                    case R.id.nav_home:
+                        startActivity(new Intent(JobsPage.this, HomePage.class));
+                        overridePendingTransition(0, 0);
+                        finish();
+                        break;
+                    case R.id.nav_skill:
+                        startActivity(new Intent(JobsPage.this, SkillPage.class));
+                        overridePendingTransition(0, 0);
+                        finish();
+                        break;
+                    case R.id.nav_jobs:
+                        break;
+                    case R.id.nav_classes:
+                        startActivity(new Intent(JobsPage.this, ClassesPage.class));
+                        overridePendingTransition(0, 0);
+                        finish();
+
+                        break;
+
+                    case R.id.nav_users:
+                        startActivity(new Intent(JobsPage.this, UsersPage.class));
+                        overridePendingTransition(0, 0);
+                        finish();
+                        break;
+                }
+
+                return false;
+            }
+        });
 
     }
 

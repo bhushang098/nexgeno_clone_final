@@ -94,6 +94,26 @@ public class Data {
     @Expose
     private Integer gender;
 
+    @SerializedName("is_hr")
+    @Expose
+    private Integer is_hr;
+
+    public Integer get_private() {
+        return _private;
+    }
+
+    public void set_private(Integer _private) {
+        this._private = _private;
+    }
+
+    public Integer getIs_hr() {
+        return is_hr;
+    }
+
+    public void setIs_hr(Integer is_hr) {
+        this.is_hr = is_hr;
+    }
+
     public Integer getId() {
         return id;
     }
