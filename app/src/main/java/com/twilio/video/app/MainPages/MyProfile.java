@@ -586,9 +586,11 @@ public class MyProfile extends AppCompatActivity {
             }
 
             interests.setText(Html.fromHtml(interestsString));
-            interests.setText(interests.getText().toString().
-                    substring(0,interests.getText().toString().length()-2));
-
+            if(interests.getText().toString().length()>2)
+            {
+                interests.setText(interests.getText().toString().
+                        substring(0,interests.getText().toString().length()-2));
+            }
 
         }
         if(userObj.getUserType()==1)

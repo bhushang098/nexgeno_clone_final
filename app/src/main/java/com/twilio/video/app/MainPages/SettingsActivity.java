@@ -22,11 +22,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.twilio.video.app.ApiModals.MakeClassResponse;
-import com.twilio.video.app.ApiModals.UserObj;
 import com.twilio.video.app.R;
 import com.twilio.video.app.RetrifitClient;
 import com.twilio.video.app.SettingsResponse.SettingsResponse;
-import com.twilio.video.app.SingleClassResponse.User;
 import com.twilio.video.app.SingleUserResponse.Data;
 import com.twilio.video.app.SingleUserResponse.SingleUserResponse;
 
@@ -47,16 +45,16 @@ public class SettingsActivity extends AppCompatActivity {
     String name, email, location, skill, userName, roleStr, genderStr, currentPass, newPass1, newPass2;
     EditText etName, etMail, etLocation, etSkill, etUsername, etCurrentPass, etNewPass1, etnewPass2;
     TextView tvUpdateAccountSettings, tvUpdatePrivateAccnt, tvUpdateUserName,
-            tvUpdateProfessor, tvUpdatePass,tvApplyHr,hrStatus,proStatus;
-    CardView cvprosetting,cvhrsetting;
+            tvUpdateProfessor, tvUpdatePass, tvApplyHr, hrStatus, proStatus;
+    CardView cvprosetting, cvhrsetting;
 
-    CheckBox chkPrivate,chkGraphic,chkAi,chkcn,chkPython;
+    CheckBox chkPrivate, chkGraphic, chkAi, chkcn, chkPython;
     List<String> interests = new ArrayList<String>();
 
     String token;
     Data userObj = new Data();
     PopupWindow progressPopu;
-ImageView ivback;
+    ImageView ivback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,40 +101,38 @@ ImageView ivback;
                 email = etMail.getText().toString();
                 location = etLocation.getText().toString();
                 skill = etSkill.getText().toString();
-                if(chkGraphic.isChecked())
+                if (chkGraphic.isChecked())
                     interests.add("Graphics Designing ");
 
-                if(chkAi.isChecked())
-                    interests.add("AI");
+                if (chkAi.isChecked())
+                    interests.add("Ai");
 
 
-                if(chkcn.isChecked())
+                if (chkcn.isChecked())
                     interests.add("Computer Network");
 
 
-                if(chkPython.isChecked())
+                if (chkPython.isChecked())
                     interests.add("Programming in Python");
 
 
-                if(location.isEmpty())
+                if (location.isEmpty())
                     etLocation.setError("Fill out This Field");
 
 
-                if(skill.isEmpty())
+                if (skill.isEmpty())
                     etSkill.setError("Fill out This Field");
 
 
-                if(spinGender.getSelectedItemPosition()==0)
-                {
+                if (spinGender.getSelectedItemPosition() == 0) {
                     genderStr = "1";
-                }else {
+                } else {
                     genderStr = "0";
                 }
 
-                if(name.isEmpty()||email.isEmpty()||location.isEmpty()||skill.isEmpty())
-                {
+                if (name.isEmpty() || email.isEmpty() || location.isEmpty() || skill.isEmpty()) {
 
-                }else {
+                } else {
                     //TODO Update Account Settings
                     updateAccountSettings();
                 }
@@ -147,12 +143,11 @@ ImageView ivback;
         tvApplyHr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(tvApplyHr.getText().toString().equalsIgnoreCase("Apply"))
-                {
+                if (tvApplyHr.getText().toString().equalsIgnoreCase("Apply")) {
                     //TODO Apply For Hr By Api
                     applyForHrByApi();
 
-                }else {
+                } else {
                     //already Applied For Hr
                 }
             }
@@ -161,8 +156,7 @@ ImageView ivback;
         tvUpdatePrivateAccnt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(chkPrivate.isChecked())
-                {
+                if (chkPrivate.isChecked()) {
                     //TODO Update To private Account
                     makeAccountPrivate();
                 }
@@ -181,7 +175,7 @@ ImageView ivback;
         tvUpdateProfessor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(tvUpdateProfessor.getText().toString().equalsIgnoreCase("Apply"))
+                if (tvUpdateProfessor.getText().toString().equalsIgnoreCase("Apply"))
                     updateRole();
                 //ToDo Update Role by Passing  roleStr
             }
@@ -194,16 +188,14 @@ ImageView ivback;
                 currentPass = etCurrentPass.getText().toString();
                 newPass1 = etNewPass1.getText().toString();
                 newPass2 = etnewPass2.getText().toString();
-                if(currentPass.isEmpty()||newPass1.isEmpty()||newPass2.isEmpty())
-                {
+                if (currentPass.isEmpty() || newPass1.isEmpty() || newPass2.isEmpty()) {
                     Toast.makeText(SettingsActivity.this, "PassWord Missing", Toast.LENGTH_SHORT).show();
-                }else {
-                    if(newPass1.equals(newPass2))
-                    {
+                } else {
+                    if (newPass1.equals(newPass2)) {
                         // ToDo UpDate New Pass
                         updatePassword();
 
-                    }else {
+                    } else {
                         Toast.makeText(SettingsActivity.this, "Password Not Matched", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -221,23 +213,20 @@ ImageView ivback;
         call.enqueue(new Callback<MakeClassResponse>() {
             @Override
             public void onResponse(Call<MakeClassResponse> call, Response<MakeClassResponse> response) {
-                Log.d("Response>>",response.raw().toString());
+                Log.d("Response>>", response.raw().toString());
                 progressPopu.dismiss();
 
-                if(response.body()!=null)
-                {
-                    if(response.body().getStatus())
-                    {
-
+                if (response.body() != null) {
+                    if (response.body().getStatus()) {
                         tvApplyHr.setTextSize(14f);
                         tvApplyHr.setText("Your Application is Under Review");
                         tvApplyHr.setTextColor(Color.BLACK);
                         tvApplyHr.setElevation(0f);
-                    }else {
+                    } else {
                         Toast.makeText(SettingsActivity.this, response.message().toString(), Toast.LENGTH_SHORT).show();
                     }
 
-                }else {
+                } else {
                     Toast.makeText(SettingsActivity.this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
 
                 }
@@ -250,39 +239,37 @@ ImageView ivback;
         });
     }
 
-    private void updatePassword() {
-        Call<SettingsResponse> call = RetrifitClient.getInstance()
-                .getSettingsApi().updatePass(token,currentPass,newPass1,newPass2);
+        private void updatePassword() {
+            Call<SettingsResponse> call = RetrifitClient.getInstance()
+                    .getSettingsApi().updatePass(token, currentPass, newPass1, newPass2);
 
-        call.enqueue(new Callback<SettingsResponse>() {
-            @Override
-            public void onResponse(Call<SettingsResponse> call, Response<SettingsResponse> response) {
-                Log.d("Response>>", response.raw().toString());
+            call.enqueue(new Callback<SettingsResponse>() {
+                @Override
+                public void onResponse(Call<SettingsResponse> call, Response<SettingsResponse> response) {
+                    Log.d("Response>>", response.raw().toString());
 
-                if(response.body()!=null)
-                {
-                    if(response.body().getStatus())
-                    {
-                        Toast.makeText(SettingsActivity.this, "Password Changed", Toast.LENGTH_SHORT).show();
-                        finish();
+                    if (response.body() != null) {
+                        if (response.body().getStatus()) {
+                            Toast.makeText(SettingsActivity.this, "Password Changed", Toast.LENGTH_SHORT).show();
+                            finish();
 
-                    }else {
-                        Toast.makeText(SettingsActivity.this, "Error Updating", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(SettingsActivity.this, "Error Updating", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<SettingsResponse> call, Throwable t) {
+                @Override
+                public void onFailure(Call<SettingsResponse> call, Throwable t) {
 
-                Log.d(">>Error>>", t.toString());
-            }
-        });
+                    Log.d(">>Error>>", t.toString());
+                }
+            });
 
-    }
+        }
 
-    private  void  startProgressPopup(Context context){
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+    private void startProgressPopup(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popUpView = inflater.inflate(R.layout.progres_popup,
                 null); // inflating popup layout
         progressPopu = new PopupWindow(popUpView, ViewGroup.LayoutParams.FILL_PARENT,
@@ -290,8 +277,9 @@ ImageView ivback;
         progressPopu.setAnimationStyle(android.R.style.Animation_Dialog);
         progressPopu.showAtLocation(popUpView, Gravity.CENTER, 0, 0);
     }
+
     private void updateRole() {
-startProgressPopup(this);
+        startProgressPopup(this);
         Call<SettingsResponse> call = RetrifitClient.getInstance()
                 .getSettingsApi().applyPro(token);
 
@@ -299,11 +287,9 @@ startProgressPopup(this);
             @Override
             public void onResponse(Call<SettingsResponse> call, Response<SettingsResponse> response) {
                 Log.d("Tag>response >>", response.raw().toString());
-progressPopu.dismiss();
-                if(response.body()!=null)
-                {
-                    if (response.body().getStatus())
-                    {
+                progressPopu.dismiss();
+                if (response.body() != null) {
+                    if (response.body().getStatus()) {
 
                         tvUpdateProfessor.setBackgroundColor(Color.WHITE);
                         tvUpdateProfessor.setTextColor(Color.BLACK);
@@ -311,7 +297,7 @@ progressPopu.dismiss();
                         tvUpdateProfessor.setText(response.body().getMessage());
                         Toast.makeText(SettingsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
 
-                    }else {
+                    } else {
                         Toast.makeText(SettingsActivity.this, "Error Updating ", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -319,27 +305,25 @@ progressPopu.dismiss();
 
             @Override
             public void onFailure(Call<SettingsResponse> call, Throwable t) {
-progressPopu.dismiss();
+                progressPopu.dismiss();
             }
         });
     }
 
     private void updateUserName() {
         Call<SettingsResponse> call = RetrifitClient.getInstance()
-                .getSettingsApi().updateUserName(token,userName);
+                .getSettingsApi().updateUserName(token, userName);
 
         call.enqueue(new Callback<SettingsResponse>() {
             @Override
             public void onResponse(Call<SettingsResponse> call, Response<SettingsResponse> response) {
                 Log.d("Response>>>", response.raw().toString());
 
-                if(response.body()!=null)
-                {
-                    if (response.body().getStatus())
-                    {
+                if (response.body() != null) {
+                    if (response.body().getStatus()) {
                         Toast.makeText(SettingsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         finish();
-                    }else {
+                    } else {
                         Toast.makeText(SettingsActivity.this, "Error Updating", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -357,23 +341,33 @@ progressPopu.dismiss();
     }
 
     private void updateAccountSettings() {
+
+        String i1 = " ", i2 = " ", i3 = " ", i4 = " ";
+        int lasteleIndex = interests.size() - 1;
+
+        if (lasteleIndex >= 0)
+            i1 = interests.get(0);
+        if (lasteleIndex >= 1)
+            i2 = interests.get(1);
+        if (lasteleIndex >= 2)
+            i3 = interests.get(2);
+        if (lasteleIndex >= 3)
+            i4 = interests.get(3);
+
         Call<SettingsResponse> call = RetrifitClient.getInstance()
-                .getSettingsApi().updateBasicInfo(token,name,email,skill,interests,
-                        location,genderStr);
-        
+                .getSettingsApi().updateBasicInfo(token, name, email, skill, i1, i2, i3, i4,
+                        location, genderStr);
+
         call.enqueue(new Callback<SettingsResponse>() {
             @Override
             public void onResponse(Call<SettingsResponse> call, Response<SettingsResponse> response) {
-                Log.d("Response >>>",response.raw().toString());
-                
-                if(response.body()!=null)
-                {
-                    if(response.body().getStatus())
-                    {
+                Log.d("Response >>>", response.raw().toString());
+
+                if (response.body() != null) {
+                    if (response.body().getStatus()) {
                         Toast.makeText(SettingsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
                         finish();
-                    }
-                    else {
+                    } else {
                         Toast.makeText(SettingsActivity.this, "Error Updating", Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -405,25 +399,24 @@ progressPopu.dismiss();
         call.enqueue(new Callback<SingleUserResponse>() {
             @Override
             public void onResponse(Call<SingleUserResponse> call, Response<SingleUserResponse> response) {
-                Log.d("User>obJResponse>",response.raw().toString());
-                try{
-                    if (response.body()==null)
-                    {
+                Log.d("User>obJResponse>", response.raw().toString());
+                try {
+                    if (response.body() == null) {
                         //progressPopup.dismiss();
-                        if(response.errorBody()==null){
+                        if (response.errorBody() == null) {
                             //progressBar.setVisibility(View.INVISIBLE);
-                        }else {
+                        } else {
                             // showAuthError();
                         }
-                    }else {
+                    } else {
                         //progressPopup.dismiss();
                         userObj = response.body().getData();
                         setUserData();
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e("Exception>>",e.toString());
+                    Log.e("Exception>>", e.toString());
                     // progressPopup.dismiss();
                 }
             }
@@ -442,19 +435,17 @@ progressPopu.dismiss();
         etMail.setText(userObj.getEmail());
         etLocation.setText(userObj.getLocation().toString());
         etSkill.setText(userObj.getSkill().toString());
-        if(userObj.getPrivate()==1)
-        {
+        if (userObj.getPrivate() == 1) {
             chkPrivate.setChecked(true);
         }
-        if(userObj.getGender()==1)
+        if (userObj.getGender() == 1)
             spinGender.setSelection(0);
         else
             spinGender.setSelection(1);
 
         etUsername.setText(userObj.getUsername());
 
-        if(userObj.getUserType()==1)
-        {
+        if (userObj.getUserType() == 1) {
             cvprosetting.setVisibility(View.GONE);
             proStatus.setVisibility(View.VISIBLE);
             proStatus.setText("Your application for professor is approved");
@@ -463,8 +454,7 @@ progressPopu.dismiss();
 //            tvUpdateProfessor.setElevation(0f);
             //spinRole.setSelection(1);
         }
-        if(userObj.getUserType()==2)
-        {
+        if (userObj.getUserType() == 2) {
             cvprosetting.setVisibility(View.GONE);
             proStatus.setVisibility(View.VISIBLE);
             proStatus.setText("Your Application For Professor under Review");
@@ -476,8 +466,7 @@ progressPopu.dismiss();
         }
 
 
-        if(userObj.getIs_hr()==2)
-        {
+        if (userObj.getIs_hr() == 2) {
             cvhrsetting.setVisibility(View.GONE);
             hrStatus.setVisibility(View.VISIBLE);
             hrStatus.setText("Your Application for HR is Under Review");
@@ -488,8 +477,7 @@ progressPopu.dismiss();
 //            tvApplyHr.setElevation(0f);
         }
 
-        if(userObj.getIs_hr()==1)
-        {
+        if (userObj.getIs_hr() == 1) {
             cvhrsetting.setVisibility(View.GONE);
             hrStatus.setVisibility(View.VISIBLE);
             hrStatus.setText("Your application for HR is approved");
@@ -506,21 +494,20 @@ progressPopu.dismiss();
             String[] interestsAry = userObj.getInterests().split("\"");
 
             for (int i = 1; i < interestsAry.length; i++) {
-                if(interestsAry[1].equalsIgnoreCase("Graphics Designing"))
+                if (interestsAry[i].equalsIgnoreCase("Graphics Designing"))
                     chkGraphic.setChecked(true);
 
-                if(interestsAry[1].equalsIgnoreCase("Computer Network"))
+                if (interestsAry[i].equalsIgnoreCase("Computer Network"))
                     chkcn.setChecked(true);
 
-                if(interestsAry[1].equalsIgnoreCase("Programming in Python"))
+                if (interestsAry[i].equalsIgnoreCase("Programming in Python"))
                     chkPython.setChecked(true);
 
-                if(interestsAry[1].equalsIgnoreCase("Ai"))
+                if (interestsAry[i].equalsIgnoreCase("Ai"))
                     chkAi.setChecked(true);
 
             }
         }
-
 
 
     }
@@ -553,7 +540,7 @@ progressPopu.dismiss();
 
         proStatus = findViewById(R.id.tv_pro_Accnt_status);
         hrStatus = findViewById(R.id.tv_hr_Accnt_status);
-        cvprosetting =findViewById(R.id.cv_user_role_settings);
+        cvprosetting = findViewById(R.id.cv_user_role_settings);
         cvhrsetting = findViewById(R.id.cv_hr_setting_card);
 
         chkPrivate = findViewById(R.id.chk_private_account);
@@ -586,7 +573,7 @@ progressPopu.dismiss();
                 str = checked ? "chk_Private Account Selected" : "chk_Python_programing Deselected";
                 break;
         }
-       // Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
     }
 
 }

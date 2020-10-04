@@ -469,7 +469,6 @@
 
             </androidx.cardview.widget.CardView>
 
-
             <androidx.cardview.widget.CardView
                 android:id="@+id/cv_password_settings"
                 android:layout_width="match_parent"

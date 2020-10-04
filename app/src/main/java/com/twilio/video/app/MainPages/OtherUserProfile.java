@@ -1,11 +1,8 @@
 package com.twilio.video.app.MainPages;
 
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Html;
@@ -58,7 +55,6 @@ import com.twilio.video.app.subMainPages.FollowersPage;
 import com.twilio.video.app.subMainPages.FollowingPage;
 import com.twilio.video.app.subMainPages.PostsPage;
 
-import java.text.BreakIterator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -619,8 +615,12 @@ progressPopup.dismiss();
             }
 
             interests.setText(Html.fromHtml(interestsString));
-            interests.setText(interests.getText().toString().
-                    substring(0,interests.getText().toString().length()-2));
+            if(interests.getText().toString().length()>2)
+            {
+                interests.setText(interests.getText().toString().
+                        substring(0,interests.getText().toString().length()-2));
+            }
+
 
         }
 

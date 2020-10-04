@@ -56,8 +56,8 @@ android {
         applicationId "com.nexgeno"
         minSdkVersion 21
         targetSdkVersion 29
-        versionName "1.1.11"
-        versionCode 11
+        versionName "1.1.14"
+        versionCode 14
 
         vectorDrawables.useSupportLibrary = true
 
@@ -136,8 +136,8 @@ android {
         community {
             dimension "environment"
             applicationId "com.nexgeno"
-            versionCode 11
-            versionName "1.1.11"
+            versionCode 14
+            versionName "1.1.14"
             buildConfigField 'String', 'ENVIRONMENT_DEFAULT', '"production"'
             buildConfigField("String",
                     "TWILIO_ACCESS_TOKEN",
@@ -145,9 +145,9 @@ android {
             defaultConfig
                     {
                         manifestPlaceholders = [
-                                onesignal_app_id : '4eef5819-abf0-4ce9-b12c-5ab75b51523d',
-                                // Project number pulled from dashboard, local value is ignored.
-                                onesignal_google_project_number: '715356580973'
+                                onesignal_app_id :'bca2775a-56ab-4f11-b5bb-fa8cfb69f8cb',
+
+                                onesignal_google_project_number: '326902701882'
                         ]
                     }
 

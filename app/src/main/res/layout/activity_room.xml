@@ -111,7 +111,7 @@
                     android:layout_gravity="center"
                     android:background="@drawable/roundbutton"
                     app:backgroundTint="@color/lobbyMediaControls"
-                    app:srcCompat="@drawable/pencil" />
+                  />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/btn_preview_color"
@@ -129,7 +129,7 @@
                     android:layout_gravity="center"
                     android:background="@drawable/roundbutton"
                     app:backgroundTint="@color/lobbyMediaControls"
-                    app:srcCompat="@drawable/ic_baseline_color_lens_24" />
+                    />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/btn_ereaser"
@@ -139,7 +139,7 @@
                     android:layout_marginLeft="@dimen/fab_margin"
                     android:background="@drawable/roundbutton"
                     app:backgroundTint="@color/lobbyMediaControls"
-                    app:srcCompat="@drawable/clean"/>
+                 />
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/btn_cross_raw"
                     android:layout_width="50dp"
@@ -148,7 +148,7 @@
                     android:layout_marginLeft="@dimen/fab_margin"
                     android:background="@drawable/roundbutton"
                     app:backgroundTint="@color/lobbyMediaControls"
-                    app:srcCompat="@drawable/ic_baseline_layers_clear_24"/>
+                    />
 
 
             </LinearLayout>

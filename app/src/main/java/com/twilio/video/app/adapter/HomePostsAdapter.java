@@ -245,6 +245,7 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
                 @Override
                 public void onReady(@NotNull YouTubePlayer youTubePlayer) {
                     youTubePlayer.loadVideo(postList.get(position).getYoutubeLink().toString(), 0);
+                    youTubePlayer.mute();
                 }
 
                 @Override
