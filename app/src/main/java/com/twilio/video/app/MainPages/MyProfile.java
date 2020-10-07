@@ -212,7 +212,7 @@ public class MyProfile extends AppCompatActivity {
         fabEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(MyProfile.this,SettingsActivity.class);
+                Intent i = new Intent(MyProfile.this,SettingsActivityList.class);
                 i.putExtra("token",token);
                 startActivity(i);
             }

@@ -218,4 +218,12 @@
 
     <string name="notifications_admin_channel_name">VirtualSkill Admin Channel</string>
     <string name="notifications_admin_channel_description">VirtualSkill Admin Channel Description</string>
+
+    <!--Links Of Db-->
+
+    <string name="media_path">http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/posts/</string>
+    <string name="cover_path">http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/covers/</string>
+    <string name="profile_path">http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/profile_photos/</string>
+
+
 </resources>

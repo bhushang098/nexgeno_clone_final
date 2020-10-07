@@ -28,7 +28,23 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".MainPages.SettingsActivityList"></activity>
+        <activity android:name=".SettingPages.HrSettingPage"
+            android:theme="@style/AppTheme.LoginScreen"></activity>
+        <activity
+            android:name=".SettingPages.PassSettingPage"
+            android:theme="@style/AppTheme.LoginScreen" />
+        <activity
+            android:name=".SettingPages.RoleSetingsPage"
+            android:theme="@style/AppTheme.LoginScreen" />
+        <activity
+            android:name=".SettingPages.AccountSettingsPage"
+            android:theme="@style/AppTheme.LoginScreen" />
+        <activity
+            android:name=".SettingPages.UserNameSettingsPage"
+            android:theme="@style/AppTheme.LoginScreen" />
+        <activity
+            android:name=".MainPages.SettingsActivityList"
+            android:theme="@style/AppTheme.LoginScreen" />
         <activity
             android:name=".MainPages.CreatePostPage"
             android:theme="@style/AppTheme.LoginScreen" />

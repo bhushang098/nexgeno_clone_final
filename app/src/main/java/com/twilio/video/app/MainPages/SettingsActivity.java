@@ -53,7 +53,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     String token;
     Data userObj = new Data();
-    PopupWindow progressPopu;
+    PopupWindow progressPopup;
     ImageView ivback;
 
     @Override
@@ -214,7 +214,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<MakeClassResponse> call, Response<MakeClassResponse> response) {
                 Log.d("Response>>", response.raw().toString());
-                progressPopu.dismiss();
+                progressPopup.dismiss();
 
                 if (response.body() != null) {
                     if (response.body().getStatus()) {
@@ -234,7 +234,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<MakeClassResponse> call, Throwable t) {
-                progressPopu.dismiss();
+                progressPopup.dismiss();
             }
         });
     }
@@ -272,10 +272,10 @@ public class SettingsActivity extends AppCompatActivity {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popUpView = inflater.inflate(R.layout.progres_popup,
                 null); // inflating popup layout
-        progressPopu = new PopupWindow(popUpView, ViewGroup.LayoutParams.FILL_PARENT,
+        progressPopup = new PopupWindow(popUpView, ViewGroup.LayoutParams.FILL_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, true);
-        progressPopu.setAnimationStyle(android.R.style.Animation_Dialog);
-        progressPopu.showAtLocation(popUpView, Gravity.CENTER, 0, 0);
+        progressPopup.setAnimationStyle(android.R.style.Animation_Dialog);
+        progressPopup.showAtLocation(popUpView, Gravity.CENTER, 0, 0);
     }
 
     private void updateRole() {
@@ -287,7 +287,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SettingsResponse> call, Response<SettingsResponse> response) {
                 Log.d("Tag>response >>", response.raw().toString());
-                progressPopu.dismiss();
+                progressPopup.dismiss();
                 if (response.body() != null) {
                     if (response.body().getStatus()) {
 
@@ -305,12 +305,13 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<SettingsResponse> call, Throwable t) {
-                progressPopu.dismiss();
+                progressPopup.dismiss();
             }
         });
     }
 
     private void updateUserName() {
+        startProgressPopup(SettingsActivity.this);
         Call<SettingsResponse> call = RetrifitClient.getInstance()
                 .getSettingsApi().updateUserName(token, userName);
 
@@ -318,6 +319,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SettingsResponse> call, Response<SettingsResponse> response) {
                 Log.d("Response>>>", response.raw().toString());
+                progressPopup.dismiss();
 
                 if (response.body() != null) {
                     if (response.body().getStatus()) {
@@ -331,7 +333,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<SettingsResponse> call, Throwable t) {
-
+                progressPopup.dismiss();
             }
         });
     }
@@ -342,6 +344,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void updateAccountSettings() {
 
+        startProgressPopup(SettingsActivity.this);
         String i1 = " ", i2 = " ", i3 = " ", i4 = " ";
         int lasteleIndex = interests.size() - 1;
 
@@ -362,7 +365,7 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<SettingsResponse> call, Response<SettingsResponse> response) {
                 Log.d("Response >>>", response.raw().toString());
-
+                progressPopup.dismiss();
                 if (response.body() != null) {
                     if (response.body().getStatus()) {
                         Toast.makeText(SettingsActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
@@ -375,7 +378,7 @@ public class SettingsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<SettingsResponse> call, Throwable t) {
-
+                progressPopup.dismiss();
             }
         });
 

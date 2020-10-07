@@ -68,12 +68,14 @@ import com.twilio.video.app.Dialogs.ConformationDialog;
 import com.twilio.video.app.HomePostModal.Datum;
 import com.twilio.video.app.HomePostModal.HomePostModal;
 import com.twilio.video.app.MainPages.ClassesPage;
+import com.twilio.video.app.MainPages.CreatePostPage;
 import com.twilio.video.app.MainPages.JobsPage;
 import com.twilio.video.app.MainPages.MyProfile;
 import com.twilio.video.app.MainPages.NotificationsPage;
 import com.twilio.video.app.MainPages.ProUserPage;
 import com.twilio.video.app.MainPages.SearchPage;
 import com.twilio.video.app.MainPages.SettingsActivity;
+import com.twilio.video.app.MainPages.SettingsActivityList;
 import com.twilio.video.app.MainPages.SkillPage;
 import com.twilio.video.app.MainPages.StudentsUserPage;
 import com.twilio.video.app.MainPages.TeamsPage;
@@ -109,7 +111,8 @@ public class HomePage extends AppCompatActivity{
     private  List<Datum> postDataList = new ArrayList<>();
     private RecyclerView revPostView;
     private SwipeRefreshLayout refreshLayout;
-    FloatingActionButton fabHodeNav;
+    FloatingActionButton fabHodeNav,fabGoPost;
+
     OnSwipeTouchListener onSwipeTouchListener;
     String token,name,mail;
     private static  String PREFS_NAME = "login_preferences";
@@ -195,6 +198,7 @@ public class HomePage extends AppCompatActivity{
                 .setShowCounter(true)
                 .setBadgePadding(2);
 
+
         goNotiPage.setBadgeValue(0)
                 .setBadgeOvalAfterFirst(true)
                 .setBadgeTextSize(10)
@@ -245,8 +249,10 @@ public class HomePage extends AppCompatActivity{
         ivGoChatScreen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 ivGoChatScreen.visibleBadge(false);
                 startActivity(new Intent(HomePage.this,ChatScreen.class));
+
             }
         });
 
@@ -271,6 +277,13 @@ public class HomePage extends AppCompatActivity{
                     fabHodeNav.setVisibility(View.VISIBLE);
                     fabHodeNav.requestFocusFromTouch();
                 }
+            }
+        });
+
+        fabGoPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomePage.this, CreatePostPage.class));
             }
         });
 
@@ -369,7 +382,7 @@ public class HomePage extends AppCompatActivity{
                     case R.id.nav_settings:
                         fabHodeNav.setVisibility(View.GONE);
                         navView.setVisibility(View.INVISIBLE);
-                        Intent i = new Intent(HomePage.this,SettingsActivity.class);
+                        Intent i = new Intent(HomePage.this, SettingsActivityList.class);
                         i.putExtra("token",token);
                         startActivity(i);
                         overridePendingTransition(0, 0);
@@ -795,6 +808,8 @@ public class HomePage extends AppCompatActivity{
         goNotiPage = findViewById(R.id.iv_go_note_screen);
         mainFramelayout = findViewById(R.id.flHome);
 //
+        fabGoPost = findViewById(R.id.fab_go_new_post_from_home);
+
         NavigationView navigationView = (NavigationView)
                 findViewById(R.id.drawer_main_navigation);
         View hView =  navigationView.getHeaderView(0);
