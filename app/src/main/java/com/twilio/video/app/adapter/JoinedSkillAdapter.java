@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.twilio.video.app.R;
 import com.twilio.video.app.SkillItemResponse.Datum;
@@ -33,7 +35,7 @@ public class JoinedSkillAdapter extends RecyclerView.Adapter<JoinedSkillAdapter.
     public JoinedSkillAdapter.JoinedSkillAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        View view = inflater.inflate(R.layout.skill_item,parent,false);
+        View view = inflater.inflate(R.layout.new_skill_item,parent,false);
         return new JoinedSkillAdapter.JoinedSkillAdapterViewHolder(view);
     }
 
@@ -48,6 +50,17 @@ public class JoinedSkillAdapter extends RecyclerView.Adapter<JoinedSkillAdapter.
         holder.tvmemeber.setText(String.valueOf(skillDatList.get(position).
                 getFollowers_count()+1)+" Member");
         holder.tvhost.setText(" Hosted By : "+skillDatList.get(position).getCreator().getName());
+
+        if(skillDatList.get(position).getCoverPath()!=null)
+        {
+            Glide.with(context).load("http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/covers/mini/"+
+                    skillDatList.get(position).getCoverPath())
+                    .into(holder.ivcover);
+        }else {
+
+            holder.ivcover.setImageResource(R.drawable.welcome_image);
+
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +86,7 @@ public class JoinedSkillAdapter extends RecyclerView.Adapter<JoinedSkillAdapter.
 
     public class JoinedSkillAdapterViewHolder extends RecyclerView.ViewHolder {
         TextView tvSkillName,tvfee,tvmemeber,tvhost;
+        ImageView ivcover;
 
         public JoinedSkillAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,6 +94,7 @@ public class JoinedSkillAdapter extends RecyclerView.Adapter<JoinedSkillAdapter.
             tvfee = itemView.findViewById(R.id.tv_skill_fees_on_Skill_item);
             tvmemeber = itemView.findViewById(R.id.tv_skill_members_on_skill_item);
             tvhost = itemView.findViewById(R.id.tv_skill_host_on_skill_item);
+            ivcover = itemView.findViewById(R.id.iv_skill_item_cover);
         }
     }
 }

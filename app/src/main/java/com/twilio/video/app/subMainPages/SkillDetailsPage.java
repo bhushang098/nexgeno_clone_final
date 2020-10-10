@@ -814,7 +814,7 @@ public class SkillDetailsPage extends AppCompatActivity {
 
         if (skillObj.getCoverPath() != null) {
             Glide.with(this)
-                    .load("https://www.nexgeno.com/storage/uploads/skill_covers/" + skillObj.getCoverPath()).listener(new RequestListener<Drawable>() {
+                    .load("https://www.nexgeno.com/storage/uploads/skill_covers/normal/" + skillObj.getCoverPath()).listener(new RequestListener<Drawable>() {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                     return false;
@@ -827,6 +827,8 @@ public class SkillDetailsPage extends AppCompatActivity {
                     return false;
                 }
             }).into(ivSkillCover);
+        }else {
+            ivSkillCover.setImageResource(R.drawable.welcome_image);
         }
        if (skillObj.getFee().equalsIgnoreCase("0"))
        {

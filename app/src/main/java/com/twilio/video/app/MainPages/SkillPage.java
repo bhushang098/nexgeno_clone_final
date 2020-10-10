@@ -1,4 +1,5 @@
 package com.twilio.video.app.MainPages;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import androidx.cardview.widget.CardView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.twilio.video.app.ApiModals.UserObj;
@@ -45,7 +47,8 @@ public class SkillPage extends AppCompatActivity {
 
     OnSwipeTouchListenerSkills onSwipeTouchListenerSkills;
     Toolbar toolbar;
-    Button newSkillButton;
+   // Button newSkillButton;
+    FloatingActionButton newSkill;
 
     private SkillTabsAdapter adapter;
     private TabLayout tabLayout;
@@ -56,6 +59,7 @@ public class SkillPage extends AppCompatActivity {
 
     NetworkOperator networkOperator = new NetworkOperator();
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,13 +70,13 @@ public class SkillPage extends AppCompatActivity {
             getAndSaveUserData(token);
         }
 
-
         setUi();
         toolbar.setTitle("Courses");
         toolbar.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         setSupportActionBar(toolbar);
         if (userObj.getCanCreateClass() == 0) {
-            newSkillButton.setVisibility(View.GONE);
+           // newSkillButton.setVisibility(View.GONE);
+            newSkill.setVisibility(View.GONE);
         }
 
         adapter = new SkillTabsAdapter(getSupportFragmentManager());
@@ -128,7 +132,7 @@ public class SkillPage extends AppCompatActivity {
             }
         });
 
-        newSkillButton.setOnClickListener(new View.OnClickListener() {
+        newSkill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(SkillPage.this, CreateNewSkill.class);
@@ -149,9 +153,10 @@ public class SkillPage extends AppCompatActivity {
         toolbar = findViewById(R.id.tbSkills);
         //joinBtn = findViewById(R.id.btn_join_room);
        // cvSkill = findViewById(R.id.cv_skill);
-        newSkillButton = findViewById(R.id.btn_new_Skill);
+       // newSkillButton = findViewById(R.id.btn_new_Skill);
         viewPager = (ViewPager) findViewById(R.id.vpg_skill);
         tabLayout = (TabLayout) findViewById(R.id.tbl_skill);
+        newSkill = findViewById(R.id.fab_new_skill);
     }
 
     private void loadPreferences() {

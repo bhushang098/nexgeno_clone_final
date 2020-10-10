@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -128,7 +129,7 @@ public class JoinedSkillFragment extends Fragment {
                     {
                         tvSkillsEmpty.setVisibility(View.GONE);
                         // SetAdapter
-                        revJoinedSkills.setLayoutManager(new LinearLayoutManager(getContext()));
+                        revJoinedSkills.setLayoutManager(new GridLayoutManager(getContext(),2));
                         revJoinedSkills.setAdapter(new JoinedSkillAdapter(skillDataList,getContext()));
                     }else {
                         tvSkillsEmpty.setVisibility(View.VISIBLE);

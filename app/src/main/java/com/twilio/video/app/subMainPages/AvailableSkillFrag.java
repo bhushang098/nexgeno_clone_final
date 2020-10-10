@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -112,38 +113,45 @@ public class AvailableSkillFrag extends Fragment {
     private void loadAvailableSkills(String token) {
         shimmerFrameLayout.setVisibility(View.VISIBLE);
         shimmerFrameLayout.startShimmerAnimation();
-        Call<SkillItemResponse> call = RetrifitClient.getInstance()
-                .getSkillApi().getAvailableSkills(token);
-        call.enqueue(new Callback<SkillItemResponse>() {
-            @Override
-            public void onResponse(Call<SkillItemResponse> call, Response<SkillItemResponse> response) {
-                shimmerFrameLayout.stopShimmerAnimation();
-                shimmerFrameLayout.setVisibility(View.GONE);
-                refreshLayout.setRefreshing(false);
-                Log.d("TeamResponse>>", response.raw().toString());
-                if(response.body()!=null)
-                {
-                    skillDataList = response.body().getData();
-                    if(skillDataList.size()>0)
+
+        try {
+            Call<SkillItemResponse> call = RetrifitClient.getInstance()
+                    .getSkillApi().getAvailableSkills(token);
+            call.enqueue(new Callback<SkillItemResponse>() {
+                @Override
+                public void onResponse(Call<SkillItemResponse> call, Response<SkillItemResponse> response) {
+                    shimmerFrameLayout.stopShimmerAnimation();
+                    shimmerFrameLayout.setVisibility(View.GONE);
+                    refreshLayout.setRefreshing(false);
+                    Log.d("TeamResponse>>", response.raw().toString());
+                    if(response.body()!=null)
                     {
-                        tvSkillsEmpty.setVisibility(View.GONE);
-                        // SetAdapter
-                        revAvailableSkills.setLayoutManager(new LinearLayoutManager(getContext()));
-                        revAvailableSkills.setAdapter(new AvailableSkillAdapter(skillDataList,getContext()));
-                    }else {
-                        tvSkillsEmpty.setVisibility(View.VISIBLE);
+                        skillDataList = response.body().getData();
+                        if(skillDataList.size()>0)
+                        {
+                            tvSkillsEmpty.setVisibility(View.GONE);
+                            // SetAdapter
+                            revAvailableSkills.setLayoutManager(new GridLayoutManager(getContext(),2));
+                            revAvailableSkills.setAdapter(new AvailableSkillAdapter(skillDataList,getContext()));
+                        }else {
+                            tvSkillsEmpty.setVisibility(View.VISIBLE);
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<SkillItemResponse> call, Throwable t) {
-                shimmerFrameLayout.stopShimmerAnimation();
-                shimmerFrameLayout.setVisibility(View.GONE);
-                refreshLayout.setRefreshing(false);
-                Log.d("Exception>>", t.toString());
-            }
-        });
+                @Override
+                public void onFailure(Call<SkillItemResponse> call, Throwable t) {
+                    shimmerFrameLayout.stopShimmerAnimation();
+                    shimmerFrameLayout.setVisibility(View.GONE);
+                    refreshLayout.setRefreshing(false);
+                    Log.d("Exception>>", t.toString());
+                }
+            });
+        }catch (Exception e)
+        {
+            Log.d("Exception>>",e.toString());
+        }
+
 
     }
 }

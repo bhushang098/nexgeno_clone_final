@@ -60,7 +60,6 @@ public class Datum {
     @Expose
     private String followers_count;
 
-
     public String getFollowers_count() {
         return followers_count;
     }

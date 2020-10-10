@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -149,7 +150,7 @@ public class HostedSkills extends Fragment {
                     {
                         tvSkillsEmpty.setVisibility(View.GONE);
                         // SetAdapter
-                        revHostedSkills.setLayoutManager(new LinearLayoutManager(getContext()));
+                        revHostedSkills.setLayoutManager(new GridLayoutManager(getContext(),2));
                         revHostedSkills.setAdapter(new HostedSkillAdapter(skillDataList,getContext(),userObj));
                     }else {
                         tvSkillsEmpty.setVisibility(View.VISIBLE);
