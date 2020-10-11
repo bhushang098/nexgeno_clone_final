@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.twilio.video.app.ClassesModal.Datum;
 import com.twilio.video.app.R;
@@ -35,7 +37,7 @@ public class AvailableClassAdapter extends RecyclerView.Adapter<AvailableClassAd
     @Override
     public AvailableClassAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.class_item,parent,false);
+        View view = inflater.inflate(R.layout.new_class_item,parent,false);
         return new AvailableClassAdapterViewHolder(view);
     }
 
@@ -51,6 +53,12 @@ public class AvailableClassAdapter extends RecyclerView.Adapter<AvailableClassAd
             holder.fees.setText("Free Class");
         }else {
             holder.fees.setText("INR:  "+classList.get(position).getFee());
+        }
+
+        if(classList.get(position).getCoverPath()!=null)
+        {
+            Glide.with(context).load("http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/covers/mini/"+classList.get(position).getCoverPath())
+                    .into(holder.ivCover);
         }
         holder.classHost.setText("Hosted By  "+classList.get(position).getCreator().getName());
         holder.date.setText(" " + DateUtil.getDate(classList.get(position).getStartDate())+" - "+DateUtil.getDate(classList.get(position).getEndDate()));
@@ -85,12 +93,13 @@ public class AvailableClassAdapter extends RecyclerView.Adapter<AvailableClassAd
     class AvailableClassAdapterViewHolder extends RecyclerView.ViewHolder {
 
         TextView className, classHost, location, fees,date,timing;
+        ImageView ivCover;
 
 
         public AvailableClassAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             className = itemView.findViewById(R.id.tv_class_name);
-
+            ivCover = itemView.findViewById(R.id.iv_class_item_cover);
             classHost = itemView.findViewById(R.id.tv_host_name);
             location = itemView.findViewById(R.id.tv_class_location);
             fees = itemView.findViewById(R.id.tv_free_paid_class);

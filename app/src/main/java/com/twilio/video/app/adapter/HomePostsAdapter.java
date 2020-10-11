@@ -1,8 +1,12 @@
 package com.twilio.video.app.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import android.view.Gravity;
@@ -15,10 +19,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,11 +38,14 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+
+import com.devbrackets.android.exomedia.core.listener.ExoPlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 import com.potyvideo.library.AndExoPlayerView;
+import com.potyvideo.library.globalInterfaces.ExoPlayerCallBack;
 import com.twilio.video.app.ApiModals.MakeClassResponse;
 import com.twilio.video.app.ApiModals.PostLikeResponse;
 import com.twilio.video.app.HomePostModal.Comment;
@@ -49,6 +58,7 @@ import com.twilio.video.app.UpdatePostResponse;
 import com.twilio.video.app.subMainPages.DetailedVidView;
 import com.twilio.video.app.util.TimeService;
 
+
 import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
@@ -57,7 +67,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import kotlin.reflect.KVisibility;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -73,12 +82,16 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
     String token;
 
 
+
+
     public HomePostsAdapter(List<Datum> postList, Context context, int userId, String token) {
         this.postList = postList;
         this.context = context;
         this.userId = userId;
         this.token = token;
+
     }
+
 
     public List<Datum> getPostList() {
         return postList;
@@ -89,83 +102,20 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
         notifyDataSetChanged();
     }
 
+
     @Override
     public void onViewAttachedToWindow(@NonNull HomePostAdapterViewHolder holder) {
 
-        if(holder.ytVidView.getVisibility()== View.VISIBLE)
-        {
-//            holder.ytVidView.addYouTubePlayerListener(new YouTubePlayerListener() {
-//                @Override
-//                public void onReady(@NotNull YouTubePlayer youTubePlayer) {
-//                    youTubePlayer.loadVideo(holder.payload.getText().toString(),
-//                            0);
-//                }
-//
-//                @Override
-//                public void onStateChange(@NotNull YouTubePlayer youTubePlayer, PlayerConstants.@NotNull PlayerState playerState) {
-//
-//                }
-//
-//                @Override
-//                public void onPlaybackQualityChange(@NotNull YouTubePlayer youTubePlayer, PlayerConstants.@NotNull PlaybackQuality playbackQuality) {
-//
-//                }
-//
-//                @Override
-//                public void onPlaybackRateChange(@NotNull YouTubePlayer youTubePlayer, PlayerConstants.@NotNull PlaybackRate playbackRate) {
-//
-//                }
-//
-//                @Override
-//                public void onError(@NotNull YouTubePlayer youTubePlayer, PlayerConstants.@NotNull PlayerError playerError) {
-//
-//                }
-//
-//                @Override
-//                public void onCurrentSecond(@NotNull YouTubePlayer youTubePlayer, float v) {
-//
-//                }
-//
-//                @Override
-//                public void onVideoDuration(@NotNull YouTubePlayer youTubePlayer, float v) {
-//
-//                }
-//
-//                @Override
-//                public void onVideoLoadedFraction(@NotNull YouTubePlayer youTubePlayer, float v) {
-//
-//                }
-//
-//                @Override
-//                public void onVideoId(@NotNull YouTubePlayer youTubePlayer, @NotNull String s) {
-//
-//                }
-//                @Override
-//                public void onApiChange(@NotNull YouTubePlayer youTubePlayer) {
-//
-//                }
-//            });
-        }
-
         if(holder.videoView.getVisibility()==View.VISIBLE)
         {
-
-            // holder.videoView.setSource(holder.payload.getText().toString());
-
+                holder.videoView.setSource(holder.payload.getText().toString().trim());
         }
         super.onViewAttachedToWindow(holder);
-        Log.d("Attached>>",holder.caption.getText().toString());
-
     }
 
     @Override
     public void onViewDetachedFromWindow(@NonNull HomePostAdapterViewHolder holder) {
-
-        //No Need To Pause Players Here
-
         super.onViewDetachedFromWindow(holder);
-        Log.d("DeAttached>>",holder.caption.getText().toString());
-
     }
 
     @NonNull
@@ -174,7 +124,6 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.post_item, parent, false);
         return new HomePostAdapterViewHolder(view);
-
     }
 
 
@@ -299,7 +248,6 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
                     + postList.get(position).getDUploadedFiles().get(0).getFilePath();
             holder.ivPlayImg.setVisibility(View.VISIBLE);
             holder.videoView.setVisibility(View.VISIBLE);
-            holder.videoView.setSource(vidUrl);
             holder.payload.setText(vidUrl);
         }
 
@@ -605,7 +553,6 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
         if (datum.getContent() != null) {
             etCaption.setText(datum.getContent());
         }
-
         ImageView video = popUpView.findViewById(R.id.vv_update_post);
         YouTubePlayerView ytVid = popUpView.findViewById(R.id.ytVv_update_post);
         ImageView ivCross = popUpView.findViewById(R.id.iv_cancle_update_post);
@@ -757,7 +704,6 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
     }
 
 
-
     @Override
     public int getItemCount() {
         return postList.size();
@@ -765,7 +711,7 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
 
     class HomePostAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        TextView userName, timesAgo, noOfLikes, noOfComment2, caption, tvSeeComments,payload;
+        TextView userName, timesAgo, noOfLikes, noOfComment2, caption, tvSeeComments, payload;
         CircleImageView userProfile;
         ProgressBar progressBar;
         ImageView mediaView, likeView, menuImage;

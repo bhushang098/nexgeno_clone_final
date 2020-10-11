@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -129,7 +130,7 @@ public class AvailableTeamsFrag extends Fragment {
                     if(teamDataList.size()>0)
                     {
                         // SetAdapter
-                        revAvailableTeams.setLayoutManager(new LinearLayoutManager(getContext()));
+                        revAvailableTeams.setLayoutManager(new GridLayoutManager(getContext(),2));
                         revAvailableTeams.setAdapter(new AvailableTeamsAdapter(teamDataList,getContext()));
                     }else {
                         tvTeamsEmpty.setVisibility(View.VISIBLE);

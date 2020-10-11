@@ -75,7 +75,7 @@ public class SkillPage extends AppCompatActivity {
         toolbar.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         setSupportActionBar(toolbar);
         if (userObj.getCanCreateClass() == 0) {
-           // newSkillButton.setVisibility(View.GONE);
+           //newSkillButton.setVisibility(View.GONE);
             newSkill.setVisibility(View.GONE);
         }
 

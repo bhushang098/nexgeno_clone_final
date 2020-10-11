@@ -5,10 +5,12 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.twilio.video.app.R;
 import com.twilio.video.app.TeamResponse.Datum;
@@ -31,7 +33,7 @@ public class AvailableTeamsAdapter extends RecyclerView.Adapter<AvailableTeamsAd
     public AvailableTeamsAdapter.AvailableTeamsAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        View view = inflater.inflate(R.layout.team_item,parent,false);
+        View view = inflater.inflate(R.layout.new_team_item,parent,false);
         return new AvailableTeamsAdapter.AvailableTeamsAdapterViewHolder(view);
 
     }
@@ -44,6 +46,12 @@ public class AvailableTeamsAdapter extends RecyclerView.Adapter<AvailableTeamsAd
         holder.members.setText(String.valueOf(teamsList.get(position).getFollowers_count())+" : Members");
         // No Joined holder.joined.setText(teamsList.get(position).getName());
         holder.host.setText("Hosted By : "+teamsList.get(position).getCreated_by().getName());
+
+        if(teamsList.get(position).getCoverPath()!=null)
+        {
+            Glide.with(context).load(""+teamsList.get(position).getCoverPath())
+                    .into(holder.ivCover);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -69,6 +77,7 @@ public class AvailableTeamsAdapter extends RecyclerView.Adapter<AvailableTeamsAd
 
     public class AvailableTeamsAdapterViewHolder extends  RecyclerView.ViewHolder{
         TextView teamName,location,members,joined,host;
+        ImageView ivCover;
 
         public AvailableTeamsAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -77,6 +86,7 @@ public class AvailableTeamsAdapter extends RecyclerView.Adapter<AvailableTeamsAd
             members = itemView.findViewById(R.id.tv_num_member_on_team_item);
             joined = itemView.findViewById(R.id.tv_num_joined_on_team_item);
             host = itemView.findViewById(R.id.tv_team_host_on_team_name);
+            ivCover = itemView.findViewById(R.id.iv_team_item_cover);
 
         }
     }

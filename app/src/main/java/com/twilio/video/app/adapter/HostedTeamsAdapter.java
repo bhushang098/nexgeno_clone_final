@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.twilio.video.app.ApiModals.UserObj;
 import com.twilio.video.app.R;
 import com.twilio.video.app.TeamResponse.Datum;
@@ -33,7 +35,7 @@ public class HostedTeamsAdapter extends RecyclerView.Adapter<HostedTeamsAdapter.
     public HostedTeamsAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        View view = inflater.inflate(R.layout.team_item,parent,false);
+        View view = inflater.inflate(R.layout.new_team_item,parent,false);
         return new HostedTeamsAdapter.HostedTeamsAdapterViewHolder(view);
     }
 
@@ -44,6 +46,12 @@ public class HostedTeamsAdapter extends RecyclerView.Adapter<HostedTeamsAdapter.
         holder.members.setText(String.valueOf(teamsList.get(position).getFollowers_count())+" : Members");
         // No Joined holder.joined.setText(teamsList.get(position).getName());
         holder.host.setText("Hosted By : "+teamsList.get(position).getCreated_by().getName());
+
+        if(teamsList.get(position).getCoverPath()!=null)
+        {
+            Glide.with(context).load(""+teamsList.get(position).getCoverPath())
+                    .into(holder.ivCover);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +75,7 @@ public class HostedTeamsAdapter extends RecyclerView.Adapter<HostedTeamsAdapter.
 
     public class HostedTeamsAdapterViewHolder extends RecyclerView.ViewHolder {
         TextView teamName,location,members,joined,host;
+        ImageView ivCover;
         public HostedTeamsAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
             teamName = itemView.findViewById(R.id.tv_team_name_on_team_item);
@@ -74,6 +83,8 @@ public class HostedTeamsAdapter extends RecyclerView.Adapter<HostedTeamsAdapter.
             members = itemView.findViewById(R.id.tv_num_member_on_team_item);
             joined = itemView.findViewById(R.id.tv_num_joined_on_team_item);
             host = itemView.findViewById(R.id.tv_team_host_on_team_name);
+            ivCover = itemView.findViewById(R.id.iv_team_item_cover);
+
         }
     }
 }

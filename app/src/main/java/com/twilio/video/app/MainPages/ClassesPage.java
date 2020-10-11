@@ -1,5 +1,6 @@
 package com.twilio.video.app.MainPages;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.twilio.video.app.ApiModals.UserObj;
@@ -47,10 +49,12 @@ public class ClassesPage extends AppCompatActivity {
     Button btnNewClass;
     String token;
     Data userObj = new Data();
+    FloatingActionButton newClass;
 
     NetworkOperator networkOperator = new NetworkOperator();
 
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +71,7 @@ public class ClassesPage extends AppCompatActivity {
 
 
         if (userObj.getCanCreateClass() == 0) {
-            btnNewClass.setVisibility(View.GONE);
+            newClass.setVisibility(View.GONE);
         }
 
         adapter = new ClassTabsAdapter(getSupportFragmentManager());
@@ -80,7 +84,7 @@ public class ClassesPage extends AppCompatActivity {
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
-        btnNewClass.setOnClickListener(new View.OnClickListener() {
+        newClass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(ClassesPage.this, CreateClassPage.class);
@@ -186,6 +190,7 @@ public class ClassesPage extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.vpg_classes);
         tabLayout = (TabLayout) findViewById(R.id.tbl_classes);
         btnNewClass = findViewById(R.id.btn_new_class);
+        newClass = findViewById(R.id.fab_new_class);
     }
 
     private void loadPreferences() {

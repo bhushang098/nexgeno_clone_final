@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.twilio.video.app.R;
 import com.twilio.video.app.TeamResponse.Datum;
@@ -31,7 +33,7 @@ public class JoinedTeamsAdapter extends RecyclerView.Adapter<JoinedTeamsAdapter.
     public JoinedTeamsAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        View view = inflater.inflate(R.layout.team_item,parent,false);
+        View view = inflater.inflate(R.layout.new_team_item,parent,false);
         return new JoinedTeamsAdapter.JoinedTeamsAdapterViewHolder(view);
     }
 
@@ -43,6 +45,12 @@ public class JoinedTeamsAdapter extends RecyclerView.Adapter<JoinedTeamsAdapter.
         holder.members.setText(String.valueOf(teamsList.get(position).getFollowers_count())+" : Members");
         // No Joined holder.joined.setText(teamsList.get(position).getName());
         holder.host.setText("Hosted By : "+teamsList.get(position).getCreated_by().getName());
+
+        if(teamsList.get(position).getCoverPath()!=null)
+        {
+            Glide.with(context).load(""+teamsList.get(position).getCoverPath())
+                    .into(holder.ivCover);
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +76,7 @@ public class JoinedTeamsAdapter extends RecyclerView.Adapter<JoinedTeamsAdapter.
 
     public class JoinedTeamsAdapterViewHolder extends RecyclerView.ViewHolder {
         TextView teamName,location,members,joined,host;
+        ImageView ivCover;
 
         public JoinedTeamsAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -76,6 +85,8 @@ public class JoinedTeamsAdapter extends RecyclerView.Adapter<JoinedTeamsAdapter.
             members = itemView.findViewById(R.id.tv_num_member_on_team_item);
             joined = itemView.findViewById(R.id.tv_num_joined_on_team_item);
             host = itemView.findViewById(R.id.tv_team_host_on_team_name);
+            ivCover = itemView.findViewById(R.id.iv_team_item_cover);
+
         }
     }
 }

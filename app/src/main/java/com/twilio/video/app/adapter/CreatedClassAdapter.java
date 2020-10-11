@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.twilio.video.app.ApiModals.UserObj;
 import com.twilio.video.app.CreatedClassResponse.Datum;
 import com.twilio.video.app.R;
@@ -36,7 +38,7 @@ public class CreatedClassAdapter  extends RecyclerView.Adapter<CreatedClassAdapt
     public CreatedClassAdapter.CreatedClassAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        View view = inflater.inflate(R.layout.class_item,parent,false);
+        View view = inflater.inflate(R.layout.new_class_item,parent,false);
         return new CreatedClassAdapter.CreatedClassAdapterViewHolder(view);
     }
 
@@ -54,6 +56,11 @@ public class CreatedClassAdapter  extends RecyclerView.Adapter<CreatedClassAdapt
 
             holder.fees.setText("INR:  "+classList.get(position).getFee());
 
+        }
+
+        if (classList.get(position).getCoverPath() != null) {
+            Glide.with(context).load("http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/covers/mini/" + classList.get(position).getCoverPath())
+                    .into(holder.ivCover);
         }
 
         holder.classHost.setText("Hosted By  "+userObj.getName());
@@ -85,6 +92,7 @@ public class CreatedClassAdapter  extends RecyclerView.Adapter<CreatedClassAdapt
 
     public class CreatedClassAdapterViewHolder  extends RecyclerView.ViewHolder {
         TextView className, classHost, location, fees,date,timing;
+        ImageView ivCover;
 
         public CreatedClassAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -94,6 +102,7 @@ public class CreatedClassAdapter  extends RecyclerView.Adapter<CreatedClassAdapt
             fees = itemView.findViewById(R.id.tv_free_paid_class);
             date = itemView.findViewById(R.id.tv_class_since);
             timing = itemView.findViewById(R.id.tv_class_timing);
+            ivCover = itemView.findViewById(R.id.iv_class_item_cover);
         }
     }
 }

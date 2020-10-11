@@ -145,7 +145,7 @@ public class StudentUserAdapter extends RecyclerView.Adapter<StudentUserAdapter.
 
         }else
         {
-            holder.type.setText("Student");
+            holder.type.setText("professional");
             if(studentList.get(position).getLocation()!=null)
                 holder.location.setText("Location : "+studentList.get(position).getLocation());
             holder.skill.setVisibility(View.GONE);

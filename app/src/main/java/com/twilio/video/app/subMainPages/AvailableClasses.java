@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -131,7 +132,7 @@ shimmerFrameLayout.startShimmerAnimation();
                         classesDataList = response.body().getData();
                         if(classesDataList.size()>0)
                         {
-                            revAvailableClasses.setLayoutManager(new LinearLayoutManager(getContext()));
+                            revAvailableClasses.setLayoutManager(new GridLayoutManager(getContext(),2));
                             revAvailableClasses.setAdapter(new AvailableClassAdapter(classesDataList,getContext()));
                         }else {
                             tvClasssEmply.setVisibility(View.VISIBLE);

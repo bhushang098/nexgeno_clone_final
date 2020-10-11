@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -132,7 +133,7 @@ public class JoinedClasses extends Fragment {
                         classesDataList = response.body().getData();
                         if(classesDataList.size()>0)
                         {
-                            recJoinedClasses.setLayoutManager(new LinearLayoutManager(getContext()));
+                            recJoinedClasses.setLayoutManager(new GridLayoutManager(getContext(),2));
                             recJoinedClasses.setAdapter(new JoinedClassAdapter(classesDataList,getContext()));
                         }else {
                             tvEmptyStatus.setVisibility(View.VISIBLE);

@@ -11,6 +11,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -150,7 +151,7 @@ public class HostedClasses extends Fragment {
                         classesDataList = response.body().getData();
                         if(classesDataList.size()>0)
                         {
-                            revHostedClasses.setLayoutManager(new LinearLayoutManager(getContext()));
+                            revHostedClasses.setLayoutManager(new GridLayoutManager(getContext(),2));
                             revHostedClasses.setAdapter(new CreatedClassAdapter(classesDataList,getContext(),userObj));
 
                         }else {

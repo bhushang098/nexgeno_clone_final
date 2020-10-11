@@ -5,12 +5,13 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.twilio.video.app.JoinedClassResponse.Datum;
 import com.twilio.video.app.R;
@@ -20,7 +21,7 @@ import com.twilio.video.app.util.TimeService;
 
 import java.util.List;
 
-public class JoinedClassAdapter extends RecyclerView.Adapter<JoinedClassAdapter.JoinedClassAdapterViewHolder>{
+public class JoinedClassAdapter extends RecyclerView.Adapter<JoinedClassAdapter.JoinedClassAdapterViewHolder> {
 
     List<Datum> classList;
     private Context context;
@@ -35,7 +36,7 @@ public class JoinedClassAdapter extends RecyclerView.Adapter<JoinedClassAdapter.
     public JoinedClassAdapter.JoinedClassAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
-        View view = inflater.inflate(R.layout.class_item,parent,false);
+        View view = inflater.inflate(R.layout.new_class_item, parent, false);
         return new JoinedClassAdapter.JoinedClassAdapterViewHolder(view);
     }
 
@@ -44,37 +45,40 @@ public class JoinedClassAdapter extends RecyclerView.Adapter<JoinedClassAdapter.
 
         holder.className.setText(classList.get(position).getName());
         holder.className.setAllCaps(true);
-        holder.location.setText("Location : "+classList.get(position).getLocation());
+        holder.location.setText("Location : " + classList.get(position).getLocation());
         String fees = classList.get(position).getFee();
-        if(fees.equalsIgnoreCase("0"))
-        {
+        if (fees.equalsIgnoreCase("0")) {
             holder.fees.setText("Free Class");
-        }else {
-            holder.fees.setText("INR:  "+classList.get(position).getFee());
+        } else {
+            holder.fees.setText("INR:  " + classList.get(position).getFee());
 
         }
 
-        holder.classHost.setText("Hosted By  "+classList.get(position).getCreator().getName());
-        holder.date.setText(" " + DateUtil.getDate(classList.get(position).getStartDate())+" - "+DateUtil.getDate(classList.get(position).getEndDate()));
-        if(classList.get(position).getRecurringClass()==1)
-        {
-            holder.timing.setText(" Daily "+ TimeService.getTimeInAmPm(classList.get(position).getStartTime()));
-        }else {
-            holder.timing.setText(" At "+TimeService.getTimeInAmPm(classList.get(position).getStartTime()));
+        if (classList.get(position).getCoverPath() != null) {
+            Glide.with(context).load("http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/covers/mini/" + classList.get(position).getCoverPath())
+                    .into(holder.ivCover);
         }
 
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(context, ClassDetails.class);
-                    Gson json = new Gson();
-                    String strHost = json.toJson(classList.get(position).getCreator());
-                    i.putExtra("classId",classList.get(position).getEId().toString());
-                    i.putExtra("classHost",strHost);
-                    i.putExtra("status","Joined");
-                    context.startActivity(i);
-                }
-            });
+        holder.classHost.setText("Hosted By  " + classList.get(position).getCreator().getName());
+        holder.date.setText(" " + DateUtil.getDate(classList.get(position).getStartDate()) + " - " + DateUtil.getDate(classList.get(position).getEndDate()));
+        if (classList.get(position).getRecurringClass() == 1) {
+            holder.timing.setText(" Daily " + TimeService.getTimeInAmPm(classList.get(position).getStartTime()));
+        } else {
+            holder.timing.setText(" At " + TimeService.getTimeInAmPm(classList.get(position).getStartTime()));
+        }
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(context, ClassDetails.class);
+                Gson json = new Gson();
+                String strHost = json.toJson(classList.get(position).getCreator());
+                i.putExtra("classId", classList.get(position).getEId().toString());
+                i.putExtra("classHost", strHost);
+                i.putExtra("status", "Joined");
+                context.startActivity(i);
+            }
+        });
 
     }
 
@@ -85,8 +89,8 @@ public class JoinedClassAdapter extends RecyclerView.Adapter<JoinedClassAdapter.
 
     class JoinedClassAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        TextView className, classHost, location, fees,date,timing,tvEmplyStatus;
-
+        TextView className, classHost, location, fees, date, timing, tvEmplyStatus;
+        ImageView ivCover;
 
         public JoinedClassAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -96,6 +100,7 @@ public class JoinedClassAdapter extends RecyclerView.Adapter<JoinedClassAdapter.
             fees = itemView.findViewById(R.id.tv_free_paid_class);
             date = itemView.findViewById(R.id.tv_class_since);
             timing = itemView.findViewById(R.id.tv_class_timing);
+            ivCover = itemView.findViewById(R.id.iv_class_item_cover);
 
         }
     }

@@ -17,6 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
 import com.twilio.video.app.ApiModals.UserObj;
@@ -37,6 +38,7 @@ public class TeamsPage extends AppCompatActivity {
 
     OnSwipeTouchListenerTeams onSwipeTouchListenerTeams;
     Toolbar toolbar;
+    FloatingActionButton newTeam;
 
     private TemasTabAdapter adapter;
     private TabLayout tabLayout;
@@ -103,7 +105,7 @@ public class TeamsPage extends AppCompatActivity {
             }
         });
 
-        newTeamButton.setOnClickListener(new View.OnClickListener() {
+        newTeam.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(TeamsPage.this, CreateTeamPage.class);
@@ -124,6 +126,7 @@ public class TeamsPage extends AppCompatActivity {
         viewPager = (ViewPager) findViewById(R.id.vpg_teams);
         tabLayout = (TabLayout) findViewById(R.id.tbl_teams);
         newTeamButton = findViewById(R.id.btn_new_team);
+        newTeam = findViewById(R.id.fab_new_team);
 
     }
     private void loadPreferences() {
