@@ -65,6 +65,7 @@ public class SkillPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_skill_page);
         loadPreferences();
+
         if(networkOperator.checknetConnection(this))
         {
             getAndSaveUserData(token);
@@ -74,7 +75,7 @@ public class SkillPage extends AppCompatActivity {
         toolbar.setTitle("Courses");
         toolbar.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
         setSupportActionBar(toolbar);
-        if (userObj.getCanCreateClass() == 0) {
+        if (userObj.getUserType() == 0) {
            //newSkillButton.setVisibility(View.GONE);
             newSkill.setVisibility(View.GONE);
         }
@@ -82,11 +83,12 @@ public class SkillPage extends AppCompatActivity {
         adapter = new SkillTabsAdapter(getSupportFragmentManager());
         adapter.addFragment(new AvailableSkillFrag(), "Available ");
         adapter.addFragment(new JoinedSkillFragment(), "Joined ");
-        if(userObj.getCanCreateSkill()==1)
+
+
+        if(userObj.getUserType()==1)
         {
             adapter.addFragment(new HostedSkills(), "Hosted ");
         }
-
 
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
@@ -94,8 +96,10 @@ public class SkillPage extends AppCompatActivity {
 
         onSwipeTouchListenerSkills = new OnSwipeTouchListenerSkills(this, findViewById(R.id.flSkills));
 
+
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_skill);
         bottomNavigationView.setSelectedItemId(R.id.nav_skill);
+
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -142,7 +146,6 @@ public class SkillPage extends AppCompatActivity {
                 String userObjStr = gson.toJson(userObj);
                 i.putExtra("skillObj","0");
                 i.putExtra("userObj", userObjStr);
-
                 startActivity(i);
             }
         });

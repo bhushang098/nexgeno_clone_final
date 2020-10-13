@@ -557,7 +557,7 @@ public class MyProfile extends AppCompatActivity {
         tvFollowerNo.setText(String.valueOf(followerList.size()));
         tvFollowingNo.setText(String.valueOf(followingsList.size()));
 
-        if(userObj.getGender()==0)
+        if(userObj.getSex()==0)
         {
             gender.setText("Female");
             ivgender.setImageResource(R.drawable.female);
@@ -578,7 +578,7 @@ public class MyProfile extends AppCompatActivity {
 
             for(int i = 1;i<interestsAry.length;i++)
             {
-               if(interestsAry[i].length()>1)
+               if(interestsAry[i].length()>1 && !(interestsAry[i].equalsIgnoreCase("null")))
                {
                    interestsString = interestsString + interestsAry[i]+"<b>"+" , "+"</b>";
                }

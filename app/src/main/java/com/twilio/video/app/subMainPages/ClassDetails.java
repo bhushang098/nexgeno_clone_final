@@ -97,7 +97,6 @@ ClassDetails extends AppCompatActivity {
     String token,classId;
     UserObj userObj;
     CardView cvHostOrJoinClass, cvBookSeat, cvJoinorLeave;
-    ProgressBar progressBar;
     Dialog joinSuccessDialog;
     Button btnOk;
     String status = "";
@@ -711,11 +710,8 @@ ClassDetails extends AppCompatActivity {
     }
 
     private void joinOrLeaveClass(int classId) {
-
         Call<ClassJoinLeaveResponse> call;
-        progressBar.setVisibility(View.VISIBLE);
-        progressBar.bringToFront();
-
+        startProgressPopup(ClassDetails.this);
         call = RetrifitClient.getInstance()
                 .getClassesApi().joinUnJoinClass("class/subscribe/" + String.valueOf(classId), token);
 
@@ -724,8 +720,9 @@ ClassDetails extends AppCompatActivity {
             @Override
             public void onResponse(Call<ClassJoinLeaveResponse> call, Response<ClassJoinLeaveResponse> response) {
                 try {
+                    progressPopup.dismiss();
                     if (response.body() == null) {
-                        progressBar.setVisibility(View.GONE);
+
                     } else {
                         Log.d("ResponseJoinunJoin>>>>", response.raw().toString());
 
@@ -742,7 +739,7 @@ ClassDetails extends AppCompatActivity {
                                 }
                             }
 
-                            progressBar.setVisibility(View.GONE);
+
 
                             if(response.body().getMessage().equalsIgnoreCase("Success"))
                             {
@@ -759,14 +756,14 @@ ClassDetails extends AppCompatActivity {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    progressBar.setVisibility(View.GONE);
+                    progressPopup.dismiss();
                 }
             }
 
             @Override
             public void onFailure(Call<ClassJoinLeaveResponse> call, Throwable t) {
 
-                progressBar.setVisibility(View.GONE);
+                progressPopup.dismiss();
             }
         });
 
@@ -834,7 +831,6 @@ ClassDetails extends AppCompatActivity {
         tvJoinLeaveClass = findViewById(R.id.tv_join_leave_class);
         cvBookSeat = findViewById(R.id.cv_class_book_seat);
         cvJoinorLeave = findViewById(R.id.cv_join_leave_class);
-        progressBar = findViewById(R.id.pb_class_details);
         ivClassCover = findViewById(R.id.iv_class_cover);
         cvPostUtils  = findViewById(R.id.cv_card_post_utils_on_class_details);
         // Post Utils
@@ -921,7 +917,6 @@ ClassDetails extends AppCompatActivity {
     }
 
     public void showSuccessJoinMess(String message) {
-        progressBar.setVisibility(View.INVISIBLE);
         joinSuccessDialog.setContentView(R.layout.class_join_success);
         TextView tvMessage = joinSuccessDialog.findViewById(R.id.tv_class_subscribe_message_on_dialog);
         btnOk = joinSuccessDialog.findViewById(R.id.btn_ok_class_join);

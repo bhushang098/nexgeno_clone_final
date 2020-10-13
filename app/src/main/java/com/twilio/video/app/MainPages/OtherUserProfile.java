@@ -572,7 +572,7 @@ progressPopup.dismiss();
             tvSkill.setText(" ");
         }
 
-        if (otherUserObj.getGender() == 0) {
+        if (otherUserObj.getSex() == 0) {
             gender.setText("Female");
             ivGender.setImageResource(R.drawable.female);
         } else {
@@ -608,7 +608,7 @@ progressPopup.dismiss();
             String interestsString = "";
 
             for (int i = 1; i < interestsAry.length; i++) {
-                if(interestsAry[i].length()>1)
+                if(interestsAry[i].length()>1 && !(interestsAry[i].equalsIgnoreCase("null")))
                 {
                     interestsString = interestsString + interestsAry[i]+"<b>"+", "+"</b>";
                 }
