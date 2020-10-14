@@ -3,6 +3,7 @@ package com.twilio.video.app.MainPages;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import com.twilio.video.app.Dialogs.ConformationDialog;
 import com.twilio.video.app.HomePage;
 import com.twilio.video.app.JobsResponse.Datum;
 import com.twilio.video.app.R;
+import com.twilio.video.app.SingleUserResponse.Data;
+import com.twilio.video.app.subMainPages.PostNewJob;
 
 public class JobDetails extends AppCompatActivity {
 
@@ -24,6 +27,7 @@ public class JobDetails extends AppCompatActivity {
     Button applyBtn;
     Datum jobObj;
     String token;
+    Data userObj = new Data();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +42,10 @@ public class JobDetails extends AppCompatActivity {
         {
             setJobData("Applied");
         }else {
-            setJobData("Apply");
+            if(getIntent().getStringExtra("status").equalsIgnoreCase("Posted"))
+                setJobData("Edit");
+            else
+                setJobData("Apply");
         }
 
 
@@ -48,8 +55,20 @@ public class JobDetails extends AppCompatActivity {
             public void onClick(View v) {
                 if(applyBtn.getText().equals("Apply"))
                 showConformationBox();
-                else
-                    Toast.makeText(JobDetails.this, "Already Applied", Toast.LENGTH_SHORT).show();
+                else{
+                    if(applyBtn.getText().equals("Edit"))
+                    {
+                        Intent i = new Intent(JobDetails.this, PostNewJob.class);
+                        i.putExtra("token",token);
+                        Gson gson = new Gson();
+                        i.putExtra("userObj",gson.toJson(userObj));
+                        i.putExtra("jobObj",gson.toJson(jobObj));
+                        startActivity(i);
+
+                    }else {
+                        Toast.makeText(JobDetails.this, "Already Applied", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
 
@@ -58,6 +77,8 @@ public class JobDetails extends AppCompatActivity {
     private void loadPrefs() {
         SharedPreferences settings = getSharedPreferences("login_preferences",
                 Context.MODE_PRIVATE);
+Gson json = new Gson();
+userObj = json.fromJson(settings.getString("UserObj",""),Data.class);
 
         token = settings.getString("token", "");
     }

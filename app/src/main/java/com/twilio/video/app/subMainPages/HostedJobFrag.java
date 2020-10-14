@@ -1,14 +1,32 @@
 package com.twilio.video.app.subMainPages;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.twilio.video.app.PostedJobResponse.Datum;
+import com.twilio.video.app.PostedJobResponse.PostedJobsList;
 import com.twilio.video.app.R;
+import com.twilio.video.app.RetrifitClient;
+import com.twilio.video.app.adapter.PostedJobsAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -26,6 +44,14 @@ public class HostedJobFrag extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+
+    private RecyclerView recyclerView;
+    ShimmerFrameLayout shimmerFrameLayout;
+    private List<Datum> JobDataList = new ArrayList<>();
+    TextView tvJobsEmpty;
+    String token;
+    SwipeRefreshLayout refreshLayout;
 
     public HostedJobFrag() {
         // Required empty public constructor
@@ -62,6 +88,66 @@ public class HostedJobFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_hosted_job, container, false);
+        ViewGroup root = (ViewGroup) inflater.inflate(R.layout.fragment_hosted_job, null);
+        recyclerView = root.findViewById(R.id.recViewPostedJobs);
+        shimmerFrameLayout = root.findViewById(R.id.sh_v_posted_jobs_page);
+        tvJobsEmpty = root.findViewById(R.id.tv_posted_jobs_not_available);
+        refreshLayout = root.findViewById(R.id.srl_posted_jobs);
+        SharedPreferences settings = getContext().getSharedPreferences("login_preferences",
+                Context.MODE_PRIVATE);
+        token = settings.getString("token","");
+        loadPostedJobs(token);
+
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                JobDataList.clear();
+                loadPostedJobs(token);
+            }
+        });
+        return root;
+    }
+
+    private void loadPostedJobs(String token) {
+
+        shimmerFrameLayout.setVisibility(View.VISIBLE);
+        shimmerFrameLayout.startShimmerAnimation();
+
+        Call<PostedJobsList> call = RetrifitClient.getInstance()
+                .gteJobsApi().postedJob(token);
+
+     call.enqueue(new Callback<PostedJobsList>() {
+         @Override
+         public void onResponse(Call<PostedJobsList> call, Response<PostedJobsList> response) {
+             Log.d("Response>>",response.raw().toString());
+             shimmerFrameLayout.stopShimmerAnimation();
+             shimmerFrameLayout.setVisibility(View.GONE);
+             refreshLayout.setRefreshing(false);
+             if(response.body()!=null)
+             {
+                 if(response.body().getStatus())
+                 {
+                     JobDataList = response.body().getData().getData();
+                     if(JobDataList.size()>0)
+                     {
+                         tvJobsEmpty.setVisibility(View.GONE);
+                         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                         recyclerView.setAdapter(new PostedJobsAdapter(getContext(),token,"Posted",JobDataList));
+                     }else {
+                         tvJobsEmpty.setVisibility(View.VISIBLE);
+                     }
+                 }
+             }
+         }
+
+         @Override
+         public void onFailure(Call<PostedJobsList> call, Throwable t) {
+
+             Log.d("Response>>",t.toString());
+             shimmerFrameLayout.stopShimmerAnimation();
+             shimmerFrameLayout.setVisibility(View.GONE);
+             refreshLayout.setRefreshing(false);
+         }
+     });
     }
 }

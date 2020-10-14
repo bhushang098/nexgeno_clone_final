@@ -34,7 +34,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-
                 <LinearLayout
                     android:orientation="vertical"
                     android:layout_width="match_parent"
@@ -90,6 +89,23 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/et_new_job_location"/>
+
+                    <TextView
+                        android:textStyle="bold"
+                        android:padding="5dp"
+                        android:text="Company "
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <EditText
+                        android:hint="Company name"
+                        android:padding="10dp"
+                        android:textColorHint="@color/lobbyColorPrimary"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/edit_text_border"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/et_new_job_company"/>
 
                     <TextView
                         android:textStyle="bold"
@@ -172,10 +188,11 @@
                             android:padding="5dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/btn_commit_new_class"
+                            android:id="@+id/btn_commit_job"
                             android:text="Post"
                             android:textColor="#ffffff"
                             android:background="@drawable/button_back_primarycolor"/>
+
                         <androidx.legacy.widget.Space
                             android:layout_width="100dp"
                             android:layout_height="1dp"/>
@@ -185,7 +202,7 @@
                             android:padding="5dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/btn_delete_class"
+                            android:id="@+id/btn_delete_job"
                             android:text=" Delete Job "
                             android:textColor="#ffffff"
                             android:visibility="gone"

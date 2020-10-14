@@ -84,7 +84,6 @@ public class CreateClassPage extends AppCompatActivity {
             etlocation.setText(classObj.getLocation());
             startDate = classObj.getStartDate();
             tvClassStartDate.setText("    "+ startDate);
-
             endDate = classObj.getEndDate();
             tvClassEdnDate.setText("     "+endDate);
             startTime = classObj.getStartTime();
@@ -117,7 +116,6 @@ public class CreateClassPage extends AppCompatActivity {
                 deleteClassByAPI();
             }
         });
-
 
         tvClassStartDate.setOnClickListener(new View.OnClickListener() {
             @Override

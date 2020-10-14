@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.google.android.gms.common.internal.BaseGmsClient;
 import com.google.gson.Gson;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -36,6 +37,7 @@ import com.twilio.video.app.ApiModals.MakeNewPostResponse;
 import com.twilio.video.app.HomePage;
 import com.twilio.video.app.R;
 import com.twilio.video.app.RetrifitClient;
+import com.twilio.video.app.util.ProgressRequestBody;
 
 import net.alhazmy13.mediapicker.Image.ImagePicker;
 import net.alhazmy13.mediapicker.Video.VideoPicker;
@@ -52,7 +54,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CreatePostPage extends AppCompatActivity {
+public class CreatePostPage extends AppCompatActivity implements ProgressRequestBody.UploadCallbacks {
 
     LinearLayout linLayPickImage, linLayPickVideo, linLayPickYtLInk;
     ImageView ivSelectedImage, ivUnSelectImage,ivSendButton;
@@ -61,6 +63,7 @@ public class CreatePostPage extends AppCompatActivity {
     YouTubePlayerView vvSelectedYtVideo;
     String content, ytLinkfinal;
     File imageFile, videoFile;
+    TextView tvProgress;
 
     String ytVidId = "";
     boolean ytPlayerInitialized = false;
@@ -268,6 +271,8 @@ public class CreatePostPage extends AppCompatActivity {
                 null); // inflating popup layout
         progressPopup = new PopupWindow(popUpView, ViewGroup.LayoutParams.FILL_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        tvProgress = popUpView.findViewById(R.id.tv_progress_text);
+
         progressPopup.setAnimationStyle(android.R.style.Animation_Dialog);
         progressPopup.showAtLocation(popUpView, Gravity.CENTER, 0, 0);
     }
@@ -381,11 +386,14 @@ public class CreatePostPage extends AppCompatActivity {
     }
     private void makepostWithVideo() {
         startProgressPopup(this);
+
         RequestBody content = RequestBody.create(MediaType.parse("multipart/form-data"), etCaption.getText().toString());
 
         RequestBody video = RequestBody.create(MediaType.parse("multipart/form-data"),videoFile);
 
-        MultipartBody.Part videoToSend = MultipartBody.Part.createFormData("video",videoFile.getName(),video);
+
+        ProgressRequestBody fileBody = new ProgressRequestBody(videoFile, "video",this);
+        MultipartBody.Part videoToSend = MultipartBody.Part.createFormData("video",videoFile.getName(),fileBody);
 
         RequestBody mediaType = RequestBody.create(MediaType.parse("multipart/form-data"), "1");
         RequestBody groupId = RequestBody.create(MediaType.parse("multipart/form-data"), "0");
@@ -396,6 +404,8 @@ public class CreatePostPage extends AppCompatActivity {
                 makeNewPostByAPI(token, content, null, null, videoToSend, mediaType, groupId, ClassId, SkillId);
 
         call.enqueue(new Callback<MakeNewPostResponse>() {
+
+
             @Override
             public void onResponse(Call<MakeNewPostResponse> call, Response<MakeNewPostResponse> response) {
 
@@ -502,4 +512,19 @@ public class CreatePostPage extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onProgressUpdate(int percentage) {
+
+        tvProgress.setText("uploaded "+String.valueOf(percentage)+" %");
+
+    }
+
+    @Override
+    public void onError() {
+    }
+
+    @Override
+    public void onFinish() {
+        tvProgress.setText(" 100 % uploaded ");
+    }
 }

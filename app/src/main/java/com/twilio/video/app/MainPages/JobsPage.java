@@ -18,6 +18,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
+import com.twilio.video.app.ApiModals.UserObj;
 import com.twilio.video.app.HomePage;
 import com.twilio.video.app.R;
 import com.twilio.video.app.RetrifitClient;
@@ -28,6 +29,7 @@ import com.twilio.video.app.subMainPages.AppliedJobsFrag;
 import com.twilio.video.app.subMainPages.FindJobsFrag;
 import com.twilio.video.app.subMainPages.HostedJobFrag;
 import com.twilio.video.app.subMainPages.HostedSkills;
+import com.twilio.video.app.subMainPages.PostNewJob;
 import com.twilio.video.app.util.NetworkOperator;
 
 import retrofit2.Call;
@@ -115,6 +117,17 @@ public class JobsPage extends AppCompatActivity {
             }
         });
 
+        fabNewJob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(JobsPage.this,PostNewJob.class);
+                Gson gson = new Gson();
+                i.putExtra("userObj",gson.toJson(userObj));
+                i.putExtra("jobObj","0");
+                i.putExtra("token",token);
+                startActivity(i);
+            }
+        });
     }
 
     private void loadPreferences() {
