@@ -572,7 +572,7 @@ progressPopup.dismiss();
             tvSkill.setText(" ");
         }
 
-        if (otherUserObj.getSex() == 0) {
+        if (otherUserObj.getGender() == 0) {
             gender.setText("Female");
             ivGender.setImageResource(R.drawable.female);
         } else {

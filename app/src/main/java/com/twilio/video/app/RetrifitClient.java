@@ -16,6 +16,7 @@ import com.twilio.video.app.Apis.TeamsApi;
 import com.twilio.video.app.Apis.UserAPI;
 
 import java.security.cert.CertificateException;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
@@ -34,11 +35,18 @@ public class RetrifitClient {
     private static RetrifitClient myinstance;
     private Retrofit retrofit;
 
+    final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+            .readTimeout(60, TimeUnit.MINUTES)
+            .connectTimeout(60, TimeUnit.MINUTES)
+            .writeTimeout(50, TimeUnit.MINUTES)
+            .build();
+
     private RetrifitClient(){
         retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(getUnsafeOkHttpClient().build())
                 .addConverterFactory(GsonConverterFactory.create())
+                .client(okHttpClient)
                 .build();
     }
     private RetrifitClient(String classId){

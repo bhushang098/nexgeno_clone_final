@@ -1,9 +1,7 @@
 package com.twilio.video.app.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -38,14 +36,10 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-
-import com.devbrackets.android.exomedia.core.listener.ExoPlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
-import com.potyvideo.library.AndExoPlayerView;
-import com.potyvideo.library.globalInterfaces.ExoPlayerCallBack;
 import com.twilio.video.app.ApiModals.MakeClassResponse;
 import com.twilio.video.app.ApiModals.PostLikeResponse;
 import com.twilio.video.app.HomePostModal.Comment;
@@ -57,7 +51,6 @@ import com.twilio.video.app.RetrifitClient;
 import com.twilio.video.app.UpdatePostResponse;
 import com.twilio.video.app.subMainPages.DetailedVidView;
 import com.twilio.video.app.util.TimeService;
-
 
 import org.jetbrains.annotations.NotNull;
 
@@ -83,12 +76,12 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
 
 
 
-
     public HomePostsAdapter(List<Datum> postList, Context context, int userId, String token) {
         this.postList = postList;
         this.context = context;
         this.userId = userId;
         this.token = token;
+
 
     }
 
@@ -108,15 +101,22 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
 
         if(holder.videoView.getVisibility()==View.VISIBLE)
         {
-                holder.videoView.setSource(holder.payload.getText().toString().trim());
+            holder.progressBar.setVisibility(View.VISIBLE);
+            Uri video = Uri.parse(holder.payload.getText().toString().trim());
+            holder.videoView.setVideoURI(video);
+
+            holder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    holder.progressBar.setVisibility(View.GONE);
+                    holder.videoView.start();
+                }
+            });
         }
         super.onViewAttachedToWindow(holder);
     }
 
-    @Override
-    public void onViewDetachedFromWindow(@NonNull HomePostAdapterViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
-    }
+
 
     @NonNull
     @Override
@@ -153,6 +153,7 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
         } catch (ParseException e) {
             e.printStackTrace();
         }
+
         List<Integer> likeeduser = new ArrayList<>();
         likeeduser = getLikedUSerIds(postList.get(position).getLikes());
 
@@ -223,10 +224,28 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
         });
 
         holder.caption.setText(postList.get(position).getContent());
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+
+        } else{
+            if (postList.get(position).getContent().length()<350)
+            {
+                holder.caption.setTextSize(14f);
+            }else {
+                if(postList.get(position).getContent().length()>800)
+                {
+                    holder.caption.setTextSize(8f);
+                }else {
+                    holder.caption.setTextSize(13f);
+                }
+            }
+        }
+
         holder.noOfLikes.setText(String.valueOf(postList.get(position).getLikes().size()));
-        holder.noOfComment2.setText(String.valueOf(postList.get(position).getComments().size()) + "  " + " comments");
-        if (postList.get(position).getHasImage() == 1) {
+        holder.noOfComment2.setText(String.valueOf(postList.get(position).getComments().size()));
+        if (postList.get(position).getHasImage() == 1){
             holder.mediaView.setVisibility(View.VISIBLE);
+            holder.progressBar.setVisibility(View.GONE);
             Glide.with(context).load("http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/posts/" + postList.get(position).getDUploadedFiles().get(0).getFilePath()).listener(new RequestListener<Drawable>() {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -248,10 +267,15 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
                     + postList.get(position).getDUploadedFiles().get(0).getFilePath();
             holder.ivPlayImg.setVisibility(View.VISIBLE);
             holder.videoView.setVisibility(View.VISIBLE);
+            MediaController mc = new MediaController(context);
+            mc.setAnchorView(holder.videoView);
+            mc.setMediaPlayer(holder.videoView);
+            holder.videoView.setMediaController(mc);
             holder.payload.setText(vidUrl);
         }
 
         if (postList.get(position).getYoutubeLink() != null) {
+            holder.progressBar.setVisibility(View.GONE);
             holder.ytVidView.setVisibility(View.VISIBLE);
             holder.ytVidView.addYouTubePlayerListener(new YouTubePlayerListener() {
                 @Override
@@ -317,12 +341,31 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
             }
         });
 
-        holder.recComments.setLayoutManager(new LinearLayoutManager(context));
-        holder.recComments.setAdapter(new CommentsAdapter(postList.get(position).getComments(), context, userId));
 
-        if (postList.get(position).getComments().size() == 0)
-            holder.tvSeeComments.setText("Be First To Comment");
+        if (postList.get(position).getHasImage()==0&&
+        postList.get(position).getHasVideo()==0&&
+        postList.get(position).getYoutubeLink()==null)
+        {
 
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                // Do something for lollipop and above versions
+            } else{
+                if (postList.get(position).getContent().length()<350)
+                {
+                    holder.caption.setTextSize(20f);
+                }else {
+                    if(postList.get(position).getContent().length()>800)
+                    {
+                        holder.caption.setTextSize(14f);
+                    }else {
+                        holder.caption.setTextSize(16f);
+                    }
+                }
+            }
+
+
+
+        }
 
         holder.tvSeeComments.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -711,15 +754,15 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
 
     class HomePostAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        TextView userName, timesAgo, noOfLikes, noOfComment2, caption, tvSeeComments, payload;
+        TextView userName, timesAgo, noOfLikes, noOfComment2, caption,  payload;
+        ImageView tvSeeComments;
         CircleImageView userProfile;
         ProgressBar progressBar;
         ImageView mediaView, likeView, menuImage;
         // Makeing iv for ThumbNail
         ImageView ivPlayImg;
-        AndExoPlayerView videoView;
+        VideoView videoView;
         YouTubePlayerView ytVidView;
-        RecyclerView recComments;
         LinearLayout linLayWriteComment, linlayuserNameanstimesHao;
 
         public HomePostAdapterViewHolder(@NonNull View itemView) {
@@ -730,9 +773,8 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
             noOfComment2 = itemView.findViewById(R.id.no_of_comments2);
             caption = itemView.findViewById(R.id.tv_caption_on_post);
             userProfile = itemView.findViewById(R.id.profile_pic_on_post);
-            progressBar = itemView.findViewById(R.id.progress_load_media_on_post);
+            progressBar = itemView.findViewById(R.id.pb_load_video_for_post);
             mediaView = itemView.findViewById(R.id.iv_on_post);
-            recComments = itemView.findViewById(R.id.recView_comment_on_post);
             tvSeeComments = itemView.findViewById(R.id.tv_see_comments);
             linLayWriteComment = itemView.findViewById(R.id.lin_lay_write_comment);
             likeView = itemView.findViewById(R.id.iv_like);

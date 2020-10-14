@@ -28,8 +28,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".SettingPages.HrSettingPage"
-            android:theme="@style/AppTheme.LoginScreen"></activity>
+        <activity android:name=".subMainPages.PostNewJob"></activity>
+        <activity
+            android:name=".SettingPages.HrSettingPage"
+            android:theme="@style/AppTheme.LoginScreen" />
         <activity
             android:name=".SettingPages.PassSettingPage"
             android:theme="@style/AppTheme.LoginScreen" />

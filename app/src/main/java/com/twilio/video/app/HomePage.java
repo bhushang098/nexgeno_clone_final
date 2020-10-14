@@ -1,7 +1,6 @@
 package com.twilio.video.app;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,11 +15,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -31,7 +28,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -41,9 +37,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -74,7 +68,6 @@ import com.twilio.video.app.MainPages.MyProfile;
 import com.twilio.video.app.MainPages.NotificationsPage;
 import com.twilio.video.app.MainPages.ProUserPage;
 import com.twilio.video.app.MainPages.SearchPage;
-import com.twilio.video.app.MainPages.SettingsActivity;
 import com.twilio.video.app.MainPages.SettingsActivityList;
 import com.twilio.video.app.MainPages.SkillPage;
 import com.twilio.video.app.MainPages.StudentsUserPage;
@@ -109,11 +102,10 @@ public class HomePage extends AppCompatActivity{
     ImageBadgeView ivGoChatScreen,goNotiPage;
     NavigationView navView;
     private  List<Datum> postDataList = new ArrayList<>();
-    private RecyclerView revPostView;
-    private SwipeRefreshLayout refreshLayout;
+    private ViewPager2 revPostView;
     FloatingActionButton fabHodeNav,fabGoPost;
 
-    OnSwipeTouchListener onSwipeTouchListener;
+
     String token,name,mail;
     private static  String PREFS_NAME = "login_preferences";
     private static  String PREF_UNAME = "Username";
@@ -127,7 +119,6 @@ public class HomePage extends AppCompatActivity{
     private  String DefaultPasswordValue = "";
 
     private String PasswordValue;
-    private RelativeLayout errorlayout;
     private TextView erroeTitle;
     private TextView errorMessage;
     boolean callCheckUpdate = true;
@@ -229,22 +220,6 @@ public class HomePage extends AppCompatActivity{
         });
 
         setSupportActionBar(toolbar);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                clearSelecetMedia();
-                loadHomePosts(token);
-            }
-        });
-        onSwipeTouchListener = new OnSwipeTouchListener(this, findViewById(R.id.flHome));
-        fabHodeNav.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("RestrictedApi")
-            @Override
-            public void onClick(View v) {
-                navView.setVisibility(View.INVISIBLE);
-                fabHodeNav.setVisibility(View.INVISIBLE);
-            }
-        });
 
         ivGoChatScreen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -799,8 +774,6 @@ public class HomePage extends AppCompatActivity{
         drawerButtion = findViewById(R.id.drawer_home_button);
         fabHodeNav = findViewById(R.id.fab_hide_nav_home);
         revPostView = findViewById(R.id.recViewHomePosts);
-        refreshLayout = findViewById(R.id.refLayoutHomePosts);
-        errorlayout = findViewById(R.id.errorlayout);
         erroeTitle = findViewById(R.id.errorTitle);
         ivGoChatScreen = findViewById(R.id.iv_go_chat_screen);
         errorMessage = findViewById(R.id.errormessage);
@@ -839,7 +812,6 @@ public class HomePage extends AppCompatActivity{
     }
 
     private void loadHomePosts(String token){
-        errorlayout.setVisibility(View.INVISIBLE);
         Call<HomePostModal> call = RetrifitClient.getInstance()
                 .getPostApi().getHomePosts(token);
         call.enqueue(new Callback<HomePostModal>() {
@@ -848,7 +820,6 @@ public class HomePage extends AppCompatActivity{
                 try{
                     if(response.body() == null){
                         Log.d("Error>>", response.errorBody().string());
-                        refreshLayout.setRefreshing(false);
                         mShimmerViewContainer.stopShimmerAnimation();
                         mShimmerViewContainer.setVisibility(View.GONE);
 
@@ -856,9 +827,8 @@ public class HomePage extends AppCompatActivity{
                     }else {
                         if(response.body().getStatus()==null){
                             postDataList = response.body().getPosts().getData();
-                            revPostView.setLayoutManager(new LinearLayoutManager(HomePage.this));
+                            //revPostView.setLayoutManager(new LinearLayoutManager(HomePage.this));
                             revPostView.setAdapter(new HomePostsAdapter(postDataList,HomePage.this,userObj.getId(),token));
-                            refreshLayout.setRefreshing(false);
                             mShimmerViewContainer.stopShimmerAnimation();
                             mShimmerViewContainer.setVisibility(View.GONE);
                         }else {
@@ -873,7 +843,7 @@ public class HomePage extends AppCompatActivity{
 
                 }catch (Exception e){
                     e.printStackTrace();
-                    refreshLayout.setRefreshing(false);
+
                     mShimmerViewContainer.stopShimmerAnimation();
                     mShimmerViewContainer.setVisibility(View.GONE);
                 }
@@ -882,7 +852,7 @@ public class HomePage extends AppCompatActivity{
             @Override
             public void onFailure(Call<HomePostModal> call, Throwable t) {
                 Toast.makeText(HomePage.this, "Error ", Toast.LENGTH_SHORT).show();
-                refreshLayout.setRefreshing(false);
+
                 mShimmerViewContainer.stopShimmerAnimation();
                 mShimmerViewContainer.setVisibility(View.GONE);
             }
@@ -962,15 +932,6 @@ public class HomePage extends AppCompatActivity{
 
     }
 
-    private void showError(String title ,String message)
-    {
-
-        if (errorlayout.getVisibility() == View.GONE){
-            errorlayout.setVisibility(View.VISIBLE);
-        }
-        errorMessage.setText(message);
-        erroeTitle.setText(title);
-    }
 
     // PostMethodWithAPI
 
@@ -1092,6 +1053,7 @@ public class HomePage extends AppCompatActivity{
         });
     }
     private void makepostWithVideo() {
+
         startProgressPopup(this);
         RequestBody content = RequestBody.create(MediaType.parse("multipart/form-data"), etCaption.getText().toString());
 
@@ -1185,95 +1147,4 @@ public class HomePage extends AppCompatActivity{
 
 }
 
-class OnSwipeTouchListener implements View.OnTouchListener {
-    private final GestureDetector gestureDetector;
-    Context context;
-
-    OnSwipeTouchListener(Context ctx, View mainView) {
-
-        gestureDetector = new GestureDetector(ctx, new GestureListener());
-        mainView.setOnTouchListener(this);
-        context = ctx;
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        return gestureDetector.onTouchEvent(event);
-    }
-
-    public class GestureListener extends
-            GestureDetector.SimpleOnGestureListener {
-        private static final int SWIPE_THRESHOLD = 100;
-        private static final int SWIPE_VELOCITY_THRESHOLD = 100;
-
-        @Override
-        public boolean onDown(MotionEvent e) {
-            return true;
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            boolean result = false;
-            try {
-                float diffY = e2.getY() - e1.getY();
-                float diffX = e2.getX() - e1.getX();
-                if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                        if (diffX > 0) {
-                            onSwipeRight();
-                        } else {
-                            onSwipeLeft();
-                        }
-                        result = true;
-                    }
-                } else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                    if (diffY > 0) {
-                        onSwipeBottom();
-                    } else {
-                        onSwipeTop();
-                    }
-                    result = true;
-                }
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-            return result;
-        }
-    }
-
-    void onSwipeRight() {
-//        Toast.makeText(context, "Swiped Right", Toast.LENGTH_SHORT).show();
-        this.onSwipe.swipeRight();
-    }
-
-    void onSwipeLeft() {
-        context.startActivity(new Intent(context,SkillPage.class));
-        Activity activity = (Activity) context;
-        activity.finish();
-        activity.overridePendingTransition(0, 0);
-        this.onSwipe.swipeLeft();
-    }
-
-    void onSwipeTop() {
-//        Toast.makeText(context, "Swiped Up", Toast.LENGTH_SHORT).show();
-        this.onSwipe.swipeTop();
-    }
-
-    void onSwipeBottom() {
-//        Toast.makeText(context, "Swiped Down", Toast.LENGTH_SHORT).show();
-        this.onSwipe.swipeBottom();
-    }
-
-    interface onSwipeListener {
-        void swipeRight();
-
-        void swipeTop();
-
-        void swipeBottom();
-
-        void swipeLeft();
-    }
-
-    onSwipeListener onSwipe;
-}
 

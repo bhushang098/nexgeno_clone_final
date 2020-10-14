@@ -557,7 +557,7 @@ public class MyProfile extends AppCompatActivity {
         tvFollowerNo.setText(String.valueOf(followerList.size()));
         tvFollowingNo.setText(String.valueOf(followingsList.size()));
 
-        if(userObj.getSex()==0)
+        if(userObj.getGender()==0)
         {
             gender.setText("Female");
             ivgender.setImageResource(R.drawable.female);

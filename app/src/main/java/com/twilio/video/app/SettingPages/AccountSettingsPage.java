@@ -39,7 +39,7 @@ public class AccountSettingsPage extends AppCompatActivity {
     TextView tvUpdateAccountSettings;
     List<String> interests = new ArrayList<String>();
     Spinner spinGender;
-    String[] gender = {"Male", "Female"};
+    String[] gender = {"Female","Male"};
     ImageView ivback;
     Data userObj = new Data();
 
@@ -174,9 +174,9 @@ public class AccountSettingsPage extends AppCompatActivity {
         etSkill.setText(userObj.getSkill().toString());
 
         if(userObj.getGender()==1)
-            spinGender.setSelection(0);
-        else
             spinGender.setSelection(1);
+        else
+            spinGender.setSelection(0);
 
 
         if (userObj.getInterests().isEmpty()) {
