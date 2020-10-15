@@ -36,6 +36,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.danikula.videocache.HttpProxyCacheServer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener;
@@ -75,7 +76,6 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
     String token;
 
 
-
     public HomePostsAdapter(List<Datum> postList, Context context, int userId, String token) {
         this.postList = postList;
         this.context = context;
@@ -99,11 +99,13 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
     @Override
     public void onViewAttachedToWindow(@NonNull HomePostAdapterViewHolder holder) {
 
-        if(holder.videoView.getVisibility()==View.VISIBLE)
-        {
+        if (holder.videoView.getVisibility() == View.VISIBLE) {
             holder.progressBar.setVisibility(View.VISIBLE);
             Uri video = Uri.parse(holder.payload.getText().toString().trim());
-            holder.videoView.setVideoURI(video);
+            HttpProxyCacheServer proxy = new HttpProxyCacheServer(context);
+            String proxyUrl = proxy.getProxyUrl(holder.payload.getText().toString().trim());
+            holder.videoView.setVideoPath(proxyUrl);
+//            holder.videoView.setVideoURI(video);
 
             holder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
@@ -117,7 +119,6 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
     }
 
 
-
     @NonNull
     @Override
     public HomePostsAdapter.HomePostAdapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -126,11 +127,8 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
         return new HomePostAdapterViewHolder(view);
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    public void onBindViewHolder(@NonNull HomePostsAdapter.HomePostAdapterViewHolder holder, int position) {
-
+    public void onBindViewHolder(@NonNull HomePostAdapterViewHolder holder, int position) {
 
         Glide.with(context).load("http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/profile_photos/" + postList.get(position).getProfilePath()).listener(new RequestListener<Drawable>() {
             @Override
@@ -224,26 +222,34 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
         });
 
         holder.caption.setText(postList.get(position).getContent());
+        holder.caption2.setText(postList.get(position).getContent());
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
 
-        } else{
-            if (postList.get(position).getContent().length()<350)
-            {
-                holder.caption.setTextSize(14f);
-            }else {
-                if(postList.get(position).getContent().length()>800)
-                {
-                    holder.caption.setTextSize(8f);
-                }else {
-                    holder.caption.setTextSize(13f);
-                }
-            }
-        }
+//            if (postList.get(position).getHasImage() == 0 && postList.get(position).getHasVideo() == 0 && postList.get(position).getYoutubeLink() == null){
+//
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//                    holder.caption.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM);
+//                }else {
+//                    holder.caption.setTextSize(17f);
+//                }
+//            }
+//            else if(postList.get(position).getContent().length()<350)
+//            {
+//                holder.caption.setTextSize(14f);
+//            }else {
+//                if(postList.get(position).getContent().length()>800)
+//                {
+//                    holder.caption.setTextSize(8f);
+//                }else {
+//                    holder.caption.setTextSize(110f);
+//                }
+//        }
 
         holder.noOfLikes.setText(String.valueOf(postList.get(position).getLikes().size()));
         holder.noOfComment2.setText(String.valueOf(postList.get(position).getComments().size()));
-        if (postList.get(position).getHasImage() == 1){
+        if (postList.get(position).getHasImage() == 1) {
+            holder.caption2.setVisibility(View.VISIBLE);
+            holder.caption.setVisibility(View.GONE);
             holder.mediaView.setVisibility(View.VISIBLE);
             holder.progressBar.setVisibility(View.GONE);
             Glide.with(context).load("http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/posts/" + postList.get(position).getDUploadedFiles().get(0).getFilePath()).listener(new RequestListener<Drawable>() {
@@ -261,8 +267,34 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
             }).into(holder.mediaView);
         }
 
-
         if (postList.get(position).getHasVideo() == 1) {
+            holder.caption2.setVisibility(View.VISIBLE);
+            holder.caption.setVisibility(View.GONE);
+            HttpProxyCacheServer proxy = new HttpProxyCacheServer(context);
+//            if (postList.get(position+1).getHasVideo() == 1){
+//            HttpProxyCacheServer proxy = new HttpProxyCacheServer(context);
+//
+//                Log.d("dddddddddddddd","http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/posts/"
+//                        +postList.get(position+1).getDUploadedFiles().get(0).getFilePath().trim());
+//
+////                InputStream inputStream = null;
+////                try {
+////                    inputStream = new URL(proxy.getProxyUrl("http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/posts/"
+////                            +postList.get(position+1).getDUploadedFiles().get(0).getFilePath().trim())).openStream();
+////                } catch (IOException e) {
+////                    e.printStackTrace();
+////                }
+////                try {
+////                    int bufferSize = 1024;
+////                    byte[] buffer = new byte[bufferSize];
+////                    int length = 0;
+////                    while ((length = inputStream.read(buffer)) != -1) {
+////                        //nothing to do
+////                    }
+////                } catch(IOException e){
+////                    e.printStackTrace();
+////                }
+//            }
             String vidUrl = "http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/posts/"
                     + postList.get(position).getDUploadedFiles().get(0).getFilePath();
             holder.ivPlayImg.setVisibility(View.VISIBLE);
@@ -270,12 +302,14 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
             MediaController mc = new MediaController(context);
             mc.setAnchorView(holder.videoView);
             mc.setMediaPlayer(holder.videoView);
-            holder.videoView.setMediaController(mc);
+            // holder.videoView.setMediaController(mc);
             holder.payload.setText(vidUrl);
         }
 
         if (postList.get(position).getYoutubeLink() != null) {
             holder.progressBar.setVisibility(View.GONE);
+            holder.caption2.setVisibility(View.VISIBLE);
+            holder.caption.setVisibility(View.GONE);
             holder.ytVidView.setVisibility(View.VISIBLE);
             holder.ytVidView.addYouTubePlayerListener(new YouTubePlayerListener() {
                 @Override
@@ -333,6 +367,48 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
 
         }
 
+        //Set FontSize if only text
+        if (postList.get(position).getContent().length() < 1) {
+            holder.caption2.setVisibility(View.GONE);
+            holder.caption.setVisibility(View.GONE);
+        }
+
+        if (postList.get(position).getHasImage() == 0 && postList.get(position).getHasVideo() == 0
+                && postList.get(position).getYoutubeLink() == null) {
+            //SteTextSize
+
+            if (postList.get(position).getContent().length() < 5) {
+                holder.caption.setTextSize(40f);
+            } else {
+                if (postList.get(position).getContent().length() >= 5 && postList.get(position).getContent().length() <= 20) {
+                    holder.caption.setTextSize(35f);
+                } else {
+                    if (postList.get(position).getContent().length() >= 20 && postList.get(position).getContent().length() <= 200) {
+                        holder.caption.setTextSize(25f);
+                    } else {
+                        if (postList.get(position).getContent().length() >= 200 && postList.get(position).getContent().length() <= 400) {
+                            holder.caption.setTextSize(20f);
+                        } else {
+                            if (postList.get(position).getContent().length() >= 400 && postList.get(position).getContent().length() <= 650) {
+                                holder.caption.setTextSize(15f);
+                            } else {
+                                if (postList.get(position).getContent().length() >= 650 && postList.get(position).getContent().length() <= 900) {
+                                    holder.caption.setTextSize(14f);
+                                }else {
+                                    if (postList.get(position).getContent().length() > 900)
+                                    {
+                                        holder.caption.setTextSize(11f);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }else {
+
+        }
+
         holder.ivPlayImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -341,31 +417,6 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
             }
         });
 
-
-        if (postList.get(position).getHasImage()==0&&
-        postList.get(position).getHasVideo()==0&&
-        postList.get(position).getYoutubeLink()==null)
-        {
-
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                // Do something for lollipop and above versions
-            } else{
-                if (postList.get(position).getContent().length()<350)
-                {
-                    holder.caption.setTextSize(20f);
-                }else {
-                    if(postList.get(position).getContent().length()>800)
-                    {
-                        holder.caption.setTextSize(14f);
-                    }else {
-                        holder.caption.setTextSize(16f);
-                    }
-                }
-            }
-
-
-
-        }
 
         holder.tvSeeComments.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -754,7 +805,7 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
 
     class HomePostAdapterViewHolder extends RecyclerView.ViewHolder {
 
-        TextView userName, timesAgo, noOfLikes, noOfComment2, caption,  payload;
+        TextView userName, timesAgo, noOfLikes, noOfComment2, caption, caption2, payload;
         ImageView tvSeeComments;
         CircleImageView userProfile;
         ProgressBar progressBar;
@@ -763,7 +814,7 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
         ImageView ivPlayImg;
         VideoView videoView;
         YouTubePlayerView ytVidView;
-        LinearLayout linLayWriteComment, linlayuserNameanstimesHao;
+        LinearLayout linlayuserNameanstimesHao;
 
         public HomePostAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -776,7 +827,6 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
             progressBar = itemView.findViewById(R.id.pb_load_video_for_post);
             mediaView = itemView.findViewById(R.id.iv_on_post);
             tvSeeComments = itemView.findViewById(R.id.tv_see_comments);
-            linLayWriteComment = itemView.findViewById(R.id.lin_lay_write_comment);
             likeView = itemView.findViewById(R.id.iv_like);
             menuImage = itemView.findViewById(R.id.iv_post_menu);
             videoView = itemView.findViewById(R.id.vv_on_post);
@@ -784,6 +834,7 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
             linlayuserNameanstimesHao = itemView.findViewById(R.id.lin_lay_u_name_on_post_item);
             ivPlayImg = itemView.findViewById(R.id.iv_play_img);
             payload = itemView.findViewById(R.id.tv_as_payload);
+            caption2 = itemView.findViewById(R.id.tv_caption_on_post2);
         }
     }
 }

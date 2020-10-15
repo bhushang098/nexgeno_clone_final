@@ -4,12 +4,16 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +46,7 @@ public class AccountSettingsPage extends AppCompatActivity {
     String[] gender = {"Female","Male"};
     ImageView ivback;
     Data userObj = new Data();
+    PopupWindow progressPopup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,6 +209,18 @@ public class AccountSettingsPage extends AppCompatActivity {
 
     }
 
+    private  void  startProgressPopup(Context context){
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+        View popUpView = inflater.inflate(R.layout.progres_popup,
+                null); // inflating popup layout
+        progressPopup = new PopupWindow(popUpView, ViewGroup.LayoutParams.FILL_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT, true);
+       // tvProgress = popUpView.findViewById(R.id.tv_progress_text);
+
+        progressPopup.setAnimationStyle(android.R.style.Animation_Dialog);
+        progressPopup.showAtLocation(popUpView, Gravity.CENTER, 0, 0);
+    }
+
     private void setUi() {
         graphicDesign = findViewById(R.id.chk_graphic_design);
         Ai = findViewById(R.id.chk_AI);
@@ -228,6 +245,7 @@ public class AccountSettingsPage extends AppCompatActivity {
     }
 
     private void updateAccountSettings() {
+        startProgressPopup(AccountSettingsPage.this);
 
         String i1 = " ",i2 = " ",i3 = " ",i4=" ";
         int lasteleIndex = interests.size()-1;
@@ -250,6 +268,7 @@ public class AccountSettingsPage extends AppCompatActivity {
             public void onResponse(Call<SettingsResponse> call, Response<SettingsResponse> response) {
                 Log.d("Response >>>",response.raw().toString());
 
+                progressPopup.dismiss();
                 if(response.body()!=null)
                 {
                     if(response.body().getStatus())
@@ -265,7 +284,7 @@ public class AccountSettingsPage extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<SettingsResponse> call, Throwable t) {
-
+                progressPopup.dismiss();
             }
         });
 

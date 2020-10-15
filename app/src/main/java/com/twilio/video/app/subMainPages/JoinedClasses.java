@@ -133,7 +133,7 @@ public class JoinedClasses extends Fragment {
                         classesDataList = response.body().getData();
                         if(classesDataList.size()>0)
                         {
-                            recJoinedClasses.setLayoutManager(new GridLayoutManager(getContext(),2));
+                            recJoinedClasses.setLayoutManager(new GridLayoutManager(getContext(),1));
                             recJoinedClasses.setAdapter(new JoinedClassAdapter(classesDataList,getContext()));
                         }else {
                             tvEmptyStatus.setVisibility(View.VISIBLE);

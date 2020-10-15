@@ -150,7 +150,7 @@ public class HostedTeamsFrag extends Fragment {
                     {
                         // SetAdapter
                         tvTeamsEmpty.setVisibility(View.INVISIBLE);
-                        revHostedTeams.setLayoutManager(new GridLayoutManager(getContext(),2));
+                        revHostedTeams.setLayoutManager(new GridLayoutManager(getContext(),1));
                         revHostedTeams.setAdapter(new HostedTeamsAdapter(teamDataList,getContext(),userObj));
                     }else {
                         tvTeamsEmpty.setVisibility(View.VISIBLE);

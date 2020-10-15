@@ -24,7 +24,7 @@
             <ImageView
                 android:id="@+id/iv_class_item_cover"
                 android:layout_width="match_parent"
-                android:layout_height="90dp"
+                android:layout_height="130dp"
                 android:scaleType="fitXY"
                 android:src="@drawable/welcome_image"/>
 
@@ -34,17 +34,18 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
                 android:gravity="center"
+                android:layout_marginTop="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Class Programing "
-                android:textSize="12dp"
+                android:textSize="14dp"
                 android:textStyle="bold"
                 />
             <TextView
                 android:id="@+id/tv_class_location"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="8dp"
                 android:layout_gravity="center"
-                android:textSize="10dp"
+                android:textSize="12dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Location : Nagpur"/>
@@ -68,11 +69,11 @@
                 <TextView
                     android:id="@+id/tv_free_paid_class"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:gravity="center"
-                    android:textSize="10dp"
                     android:text="Fee : 100 INR "
-                    android:textColor="#ffffff" />
+                    android:textColor="#ffffff"
+                    android:textSize="12dp" />
             </androidx.cardview.widget.CardView>
 
 
@@ -83,15 +84,16 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <ImageView
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     app:srcCompat="@drawable/ic_baseline_date_range_24"/>
 
                 <TextView
                     android:layout_marginLeft="10dp"
                     android:id="@+id/tv_class_since"
-                    android:textSize="10dp"
+                    android:textSize="13dp"
                     android:textColor="@color/colorPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -108,14 +110,14 @@
 
                 <ImageView
                     android:layout_gravity="center_vertical"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     app:srcCompat="@drawable/ic_baseline_access_time_24"/>
 
                 <TextView
                     android:layout_marginLeft="10dp"
                     android:layout_gravity="center"
-                    android:textSize="10dp"
+                    android:textSize="12dp"
                     android:id="@+id/tv_class_timing"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

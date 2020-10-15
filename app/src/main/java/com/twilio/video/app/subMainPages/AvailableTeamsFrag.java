@@ -130,7 +130,7 @@ public class AvailableTeamsFrag extends Fragment {
                     if(teamDataList.size()>0)
                     {
                         // SetAdapter
-                        revAvailableTeams.setLayoutManager(new GridLayoutManager(getContext(),2));
+                        revAvailableTeams.setLayoutManager(new GridLayoutManager(getContext(),1));
                         revAvailableTeams.setAdapter(new AvailableTeamsAdapter(teamDataList,getContext()));
                     }else {
                         tvTeamsEmpty.setVisibility(View.VISIBLE);

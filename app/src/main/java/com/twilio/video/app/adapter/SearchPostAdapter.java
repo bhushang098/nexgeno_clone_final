@@ -111,13 +111,13 @@ public class SearchPostAdapter extends RecyclerView.Adapter<SearchPostAdapter.Se
             Glide.with(context).load("https://virtualskill0.s3.ap-southeast-1.amazonaws.com/public/images/profile-picture.png").listener(new RequestListener<Drawable>() {
                 @Override
                 public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                    holder.progressBar.setVisibility(View.GONE);
+
                     return false;
                 }
 
                 @Override
                 public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                    holder.progressBar.setVisibility(View.GONE);
+
                     return false;
                 }
             }).into(holder.mediaView);
@@ -203,12 +203,10 @@ public class SearchPostAdapter extends RecyclerView.Adapter<SearchPostAdapter.Se
 
         TextView userName, timesAgo, noOfLikes, noOfComment2, caption, tvSeeComments;
         CircleImageView userProfile;
-        ProgressBar progressBar;
         ImageView mediaView, likeView, menuImage;
         ImageView videoView;
         YouTubePlayerView ytVidView;
-        RecyclerView recComments;
-        LinearLayout linLayWriteComment;
+
 
         public SearchPostAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -218,11 +216,8 @@ public class SearchPostAdapter extends RecyclerView.Adapter<SearchPostAdapter.Se
             noOfComment2 = itemView.findViewById(R.id.no_of_comments2);
             caption = itemView.findViewById(R.id.tv_caption_on_post);
             userProfile = itemView.findViewById(R.id.profile_pic_on_post);
-            progressBar = itemView.findViewById(R.id.progress_load_media_on_post);
             mediaView = itemView.findViewById(R.id.iv_on_post);
-            recComments = itemView.findViewById(R.id.recView_comment_on_post);
             tvSeeComments = itemView.findViewById(R.id.tv_see_comments);
-            linLayWriteComment = itemView.findViewById(R.id.lin_lay_write_comment);
             likeView = itemView.findViewById(R.id.iv_like);
             menuImage = itemView.findViewById(R.id.iv_post_menu);
             videoView = itemView.findViewById(R.id.vv_on_post);

@@ -131,7 +131,7 @@ public class AvailableSkillFrag extends Fragment {
                         {
                             tvSkillsEmpty.setVisibility(View.GONE);
                             // SetAdapter
-                            revAvailableSkills.setLayoutManager(new GridLayoutManager(getContext(),2));
+                            revAvailableSkills.setLayoutManager(new GridLayoutManager(getContext(),1));
                             revAvailableSkills.setAdapter(new AvailableSkillAdapter(skillDataList,getContext()));
                         }else {
                             tvSkillsEmpty.setVisibility(View.VISIBLE);

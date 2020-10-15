@@ -129,7 +129,7 @@ public class JoinedSkillFragment extends Fragment {
                     {
                         tvSkillsEmpty.setVisibility(View.GONE);
                         // SetAdapter
-                        revJoinedSkills.setLayoutManager(new GridLayoutManager(getContext(),2));
+                        revJoinedSkills.setLayoutManager(new GridLayoutManager(getContext(),1));
                         revJoinedSkills.setAdapter(new JoinedSkillAdapter(skillDataList,getContext()));
                     }else {
                         tvSkillsEmpty.setVisibility(View.VISIBLE);

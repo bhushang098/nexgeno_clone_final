@@ -271,7 +271,7 @@ public class CreatePostPage extends AppCompatActivity implements ProgressRequest
                 null); // inflating popup layout
         progressPopup = new PopupWindow(popUpView, ViewGroup.LayoutParams.FILL_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT, true);
-        tvProgress = popUpView.findViewById(R.id.tv_progress_text);
+        //tvProgress = popUpView.findViewById(R.id.tv_progress_text);
 
         progressPopup.setAnimationStyle(android.R.style.Animation_Dialog);
         progressPopup.showAtLocation(popUpView, Gravity.CENTER, 0, 0);
@@ -385,7 +385,8 @@ public class CreatePostPage extends AppCompatActivity implements ProgressRequest
         });
     }
     private void makepostWithVideo() {
-        startProgressPopup(this);
+       // startProgressPopup(this);
+        tvProgress.setVisibility(View.VISIBLE);
 
         RequestBody content = RequestBody.create(MediaType.parse("multipart/form-data"), etCaption.getText().toString());
 
@@ -412,7 +413,6 @@ public class CreatePostPage extends AppCompatActivity implements ProgressRequest
                 Log.d(">>>PostResponse>>", response.raw().toString());
 
                 if (response.body().getCode() == 200) {
-                    progressPopup.dismiss();
                     showSuccessPostMess("Your Post Made Successfully");
                     //Toast.makeText(ClassDetails.this, "Made Post", Toast.LENGTH_SHORT).show();
                 }
@@ -421,7 +421,7 @@ public class CreatePostPage extends AppCompatActivity implements ProgressRequest
             @Override
             public void onFailure(Call<MakeNewPostResponse> call, Throwable t) {
                 Log.d(">>>FailedPostResponse>>", t.toString());
-                progressPopup.dismiss();
+
                 Toast.makeText(CreatePostPage.this, t.toString(), Toast.LENGTH_SHORT).show();
             }
         });
@@ -478,6 +478,7 @@ public class CreatePostPage extends AppCompatActivity implements ProgressRequest
         vvSelectedVideo = findViewById(R.id.vv_selected_video_new_post);
         vvSelectedYtVideo = findViewById(R.id.yt_selected_vv_new_post);
         ivSendButton = findViewById(R.id.iv_make_post);
+        tvProgress =findViewById(R.id.tv_progress_text_on_new_post);
     }
 
     @Override
@@ -497,6 +498,8 @@ public class CreatePostPage extends AppCompatActivity implements ProgressRequest
         }
 
         if (requestCode == VideoPicker.VIDEO_PICKER_REQUEST_CODE && resultCode == RESULT_OK) {
+            tvProgress.setVisibility(View.VISIBLE);
+            tvProgress.setText("getting Video ...");
             List<String> mPaths = data.getStringArrayListExtra(VideoPicker.EXTRA_VIDEO_PATH);
             for (String path : mPaths
             ) {
@@ -504,10 +507,19 @@ public class CreatePostPage extends AppCompatActivity implements ProgressRequest
                 //ivSelectedImage.setVisibility(View.GONE);
                 vvSelectedVideo.setVisibility(View.VISIBLE);
                 videoFile = new File(path);
-                vvSelectedVideo.setVideoURI(Uri.fromFile(videoFile));
-                vvSelectedVideo.setMediaController(new MediaController(this));
-                //vvSelectedVideo.start();
-                ivUnSelectImage.setVisibility(View.VISIBLE);
+                if(videoFile.length()/1024>200000)
+                {
+                    videoFile  = null;
+                    tvProgress.setText("Video File is large to Upload  please select files under 200 Mbs");
+                    Toast.makeText(this, "File Size is very large", Toast.LENGTH_SHORT).show();
+                }else {
+                    tvProgress.setVisibility(View.GONE);
+                    vvSelectedVideo.setVideoURI(Uri.fromFile(videoFile));
+                    vvSelectedVideo.setMediaController(new MediaController(this));
+                    //vvSelectedVideo.start();
+                    ivUnSelectImage.setVisibility(View.VISIBLE);
+                }
+
             }
         }
     }

@@ -61,7 +61,6 @@ public class TeamsPage extends AppCompatActivity {
         adapter.addFragment(new JoinedTeamsFrag(), "Joined ");
         adapter.addFragment(new HostedTeamsFrag(), "Hosted ");
 
-
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 

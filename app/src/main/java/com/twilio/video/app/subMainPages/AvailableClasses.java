@@ -132,7 +132,7 @@ shimmerFrameLayout.startShimmerAnimation();
                         classesDataList = response.body().getData();
                         if(classesDataList.size()>0)
                         {
-                            revAvailableClasses.setLayoutManager(new GridLayoutManager(getContext(),2));
+                            revAvailableClasses.setLayoutManager(new GridLayoutManager(getContext(),1));
                             revAvailableClasses.setAdapter(new AvailableClassAdapter(classesDataList,getContext()));
                         }else {
                             tvClasssEmply.setVisibility(View.VISIBLE);

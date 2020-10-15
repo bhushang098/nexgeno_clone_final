@@ -130,7 +130,7 @@ public class JoinedTeamsFrag extends Fragment {
                     {
                         tvTeamsEmpty.setVisibility(View.GONE);
                         // SetAdapter
-                        revJoinedTeams.setLayoutManager(new GridLayoutManager(getContext(),2));
+                        revJoinedTeams.setLayoutManager(new GridLayoutManager(getContext(),1));
                         revJoinedTeams.setAdapter(new JoinedTeamsAdapter(teamDataList,getContext()));
                     }else {
                         tvTeamsEmpty.setVisibility(View.VISIBLE);

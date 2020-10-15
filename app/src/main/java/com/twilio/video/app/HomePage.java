@@ -261,6 +261,13 @@ public class HomePage extends AppCompatActivity{
                 startActivity(new Intent(HomePage.this, CreatePostPage.class));
             }
         });
+        fabHodeNav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navView.setVisibility(View.GONE);
+                fabHodeNav.setVisibility(View.GONE);
+            }
+        });
 
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_home);

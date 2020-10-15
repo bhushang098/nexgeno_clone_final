@@ -151,7 +151,7 @@ public class HostedClasses extends Fragment {
                         classesDataList = response.body().getData();
                         if(classesDataList.size()>0)
                         {
-                            revHostedClasses.setLayoutManager(new GridLayoutManager(getContext(),2));
+                            revHostedClasses.setLayoutManager(new GridLayoutManager(getContext(),1));
                             revHostedClasses.setAdapter(new CreatedClassAdapter(classesDataList,getContext(),userObj));
 
                         }else {
