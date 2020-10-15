@@ -27,6 +27,10 @@ public class Datum {
     @SerializedName("location")
     @Expose
     private String location;
+
+    @SerializedName("company")
+    @Expose
+    private String company;
     @SerializedName("min_qualification")
     @Expose
     private String minQualification;
@@ -128,4 +132,11 @@ public class Datum {
         this.updatedAt = updatedAt;
     }
 
+    public String getCompany() {
+        return company;
+    }
+
+    public void setCompany(String company) {
+        this.company = company;
+    }
 }

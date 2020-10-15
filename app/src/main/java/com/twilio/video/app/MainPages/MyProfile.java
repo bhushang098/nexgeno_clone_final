@@ -149,7 +149,7 @@ public class MyProfile extends AppCompatActivity {
         thisUserID = String.valueOf(userObj.getId());
 
         getUserByApi(thisUserID);
-        loadUserPosts(thisUserID);
+        //loadUserPosts(thisUserID);
     }
 
     @Override

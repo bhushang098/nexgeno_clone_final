@@ -125,7 +125,7 @@ public class OtherUserProfile extends AppCompatActivity {
         // Get The Id from Intent and Get User From Api
         token = getIntent().getStringExtra("token");
         getuserById(getIntent().getStringExtra("other_user_id"));
-        loadUserPosts(getIntent().getStringExtra("other_user_id"));
+       // loadUserPosts(getIntent().getStringExtra("other_user_id"));
 
         fabChat.setOnClickListener(new View.OnClickListener() {
             @Override

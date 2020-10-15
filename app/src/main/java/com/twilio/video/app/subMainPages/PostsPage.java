@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,6 +36,7 @@ public class PostsPage extends AppCompatActivity {
     private List<Datum> postDataList = new ArrayList<>();
     int hisUserId;
     Toolbar toolbar;
+    TextView tvNoPosts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +44,13 @@ public class PostsPage extends AppCompatActivity {
         setContentView(R.layout.activity_posts_page);
         loadPreferences();
         setUi();
-        toolbar.setTitle(getIntent().getStringExtra("user_name"));
+        if(getIntent().getStringExtra("user_name")==null)
+        {
+            toolbar.setTitle("Posts");
+        }else {
+            toolbar.setTitle(getIntent().getStringExtra("user_name"));
+        }
+
         loadUserPosts(getIntent().getStringExtra("otherUserId"));
     }
 
@@ -61,9 +69,16 @@ public class PostsPage extends AppCompatActivity {
                         shimmerFrameLayout.setVisibility(View.GONE);
 
                     }else {
+
                             postDataList = response.body().getPosts().getData();
-                            recyclerView.setLayoutManager(new LinearLayoutManager(PostsPage.this));
-                            recyclerView.setAdapter(new HomePostsAdapter(postDataList,PostsPage.this,hisUserId,token));
+                            if(postDataList.size()>0)
+                            {
+                                recyclerView.setLayoutManager(new LinearLayoutManager(PostsPage.this));
+                                recyclerView.setAdapter(new HomePostsAdapter(postDataList,PostsPage.this,hisUserId,token));
+                            }else {
+                                tvNoPosts.setVisibility(View.VISIBLE);
+                            }
+
                             shimmerFrameLayout.stopShimmerAnimation();
                             shimmerFrameLayout.setVisibility(View.GONE);
                     }
@@ -90,6 +105,7 @@ public class PostsPage extends AppCompatActivity {
         shimmerFrameLayout = findViewById(R.id.sh_v_post_page);
         recyclerView = findViewById(R.id.recViewPostPage);
         toolbar = findViewById(R.id.tb_posts_page);
+        tvNoPosts =findViewById(R.id.tv_post_item_not_available);
 
     }
 

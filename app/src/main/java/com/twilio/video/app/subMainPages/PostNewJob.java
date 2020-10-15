@@ -137,7 +137,7 @@ public class PostNewJob extends AppCompatActivity {
 
         } else {
             btnCommit.setText("Update Job");
-            btnDelete.setVisibility(View.VISIBLE);
+           etCompany.setText(jobObj.getCompany());
 
             etJobName.setText(jobObj.getTitle());
             etDesc.setText(jobObj.getDescription());
@@ -265,6 +265,7 @@ public class PostNewJob extends AppCompatActivity {
         etExperience = findViewById(R.id.et_new_job_req_expe);
         etMinQualification = findViewById(R.id.et_new_job_min_qualification);
         etSalary = findViewById(R.id.et_new_job_slalry);
+        etCompany = findViewById(R.id.et_new_job_company);
         //TextView
         tvLastDate = findViewById(R.id.tv_new_job_last_date);
 
