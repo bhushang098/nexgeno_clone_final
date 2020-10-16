@@ -2,6 +2,7 @@ package com.twilio.video.app.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -20,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -37,6 +40,9 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.danikula.videocache.HttpProxyCacheServer;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.ChasingDots;
+import com.github.ybq.android.spinkit.style.FoldingCube;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.PlayerConstants;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener;
@@ -81,8 +87,6 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
         this.context = context;
         this.userId = userId;
         this.token = token;
-
-
     }
 
 
@@ -101,6 +105,10 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
 
         if (holder.videoView.getVisibility() == View.VISIBLE) {
             holder.progressBar.setVisibility(View.VISIBLE);
+            Sprite chasingDots = new ChasingDots();
+            chasingDots.setColor(Color.parseColor("#2073CC"));
+          //  chasingDots.setScale(0.7f);
+            holder.progressBar.setIndeterminateDrawable(chasingDots);
             Uri video = Uri.parse(holder.payload.getText().toString().trim());
             HttpProxyCacheServer proxy = new HttpProxyCacheServer(context);
             String proxyUrl = proxy.getProxyUrl(holder.payload.getText().toString().trim());
@@ -111,6 +119,7 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
                 @Override
                 public void onPrepared(MediaPlayer mp) {
                     holder.progressBar.setVisibility(View.GONE);
+                    holder.ivPlayPouse.setTag("Playing");
                     holder.videoView.start();
                 }
             });
@@ -417,6 +426,49 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
             }
         });
 
+        holder.relMainView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+              if(holder.videoView.getVisibility()==View.VISIBLE)
+              {
+                  if(holder.videoView.isPlaying())
+                  {
+                      holder.ivPlayPouse.setImageResource(R.drawable.exomedia_ic_pause_white);
+                      holder.ivPlayPouse.setTag("Playing");
+                  }else {
+                      holder.ivPlayPouse.setImageResource(R.drawable.ic_play_white_24px);
+                      holder.ivPlayPouse.setTag("Stopped");
+                  }
+                  if(holder.ivPlayPouse.getVisibility()==View.GONE)
+                  {
+                      holder.ivPlayPouse.setVisibility(View.VISIBLE);
+                  }else {
+                      holder.ivPlayPouse.setVisibility(View.GONE);
+                  }
+                  //Add Mute Logic
+
+              }else {
+
+              }
+                return true;
+            }
+        });
+
+        holder.ivPlayPouse.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(holder.ivPlayPouse.getTag().equals("Playing"))
+                {
+                    holder.videoView.pause();
+                    holder.ivPlayPouse.setImageResource(R.drawable.ic_play_white_24px);
+                    holder.ivPlayPouse.setTag("Paused");
+                }else {
+                    holder.videoView.start();
+                    holder.ivPlayPouse.setImageResource(R.drawable.exomedia_ic_pause_white);
+                    holder.ivPlayPouse.setTag("Playing");
+                }
+            }
+        });
 
         holder.tvSeeComments.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -811,10 +863,11 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
         ProgressBar progressBar;
         ImageView mediaView, likeView, menuImage;
         // Makeing iv for ThumbNail
-        ImageView ivPlayImg;
+        ImageView ivPlayImg,ivPlayPouse,ivmuteUnMute;
         VideoView videoView;
         YouTubePlayerView ytVidView;
         LinearLayout linlayuserNameanstimesHao;
+        RelativeLayout relMainView;
 
         public HomePostAdapterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -835,6 +888,9 @@ public class HomePostsAdapter extends RecyclerView.Adapter<HomePostsAdapter.Home
             ivPlayImg = itemView.findViewById(R.id.iv_play_img);
             payload = itemView.findViewById(R.id.tv_as_payload);
             caption2 = itemView.findViewById(R.id.tv_caption_on_post2);
+            ivPlayPouse = itemView.findViewById(R.id.iv_play_pouse);
+            relMainView = itemView.findViewById(R.id.rel_main_view_of_post);
+            ivmuteUnMute = itemView.findViewById(R.id.iv_mute_un_mute);
         }
     }
 }

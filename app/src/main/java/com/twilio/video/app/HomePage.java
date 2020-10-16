@@ -95,40 +95,40 @@ import retrofit2.Response;
 import ru.nikartm.support.BadgePosition;
 import ru.nikartm.support.ImageBadgeView;
 
-public class HomePage extends AppCompatActivity{
+public class HomePage extends AppCompatActivity {
     Toolbar toolbar;
     ImageButton drawerButtion;
-    ImageView searchButton;
-    ImageBadgeView ivGoChatScreen,goNotiPage;
+    ImageView searchButton, ivCloseNav;
+    ImageBadgeView ivGoChatScreen, goNotiPage;
     NavigationView navView;
-    private  List<Datum> postDataList = new ArrayList<>();
+    private List<Datum> postDataList = new ArrayList<>();
     private ViewPager2 revPostView;
-    FloatingActionButton fabHodeNav,fabGoPost;
+    FloatingActionButton fabGoPost;
 
 
-    String token,name,mail;
-    private static  String PREFS_NAME = "login_preferences";
-    private static  String PREF_UNAME = "Username";
-    private static  String PREF_PASSWORD = "Password";
-    private  static  String TOKEN = "token";
-    private  String DefaultTokenValue = "";
+    String token, name, mail;
+    private static String PREFS_NAME = "login_preferences";
+    private static String PREF_UNAME = "Username";
+    private static String PREF_PASSWORD = "Password";
+    private static String TOKEN = "token";
+    private String DefaultTokenValue = "";
 
-    private  String DefaultUnameValue = "";
-    private String UnameValue,fcm_token;
+    private String DefaultUnameValue = "";
+    private String UnameValue, fcm_token;
 
-    private  String DefaultPasswordValue = "";
+    private String DefaultPasswordValue = "";
 
     private String PasswordValue;
     private TextView erroeTitle;
     private TextView errorMessage;
     boolean callCheckUpdate = true;
-    int versioncode =1;
+    int versioncode = 1;
 
     FrameLayout mainFramelayout;
 
     //For Header
-    ImageView ivCoverOnheader,civprofileOnHeader;
-    TextView tvUserName,tvUserMail;
+    ImageView ivCoverOnheader, civprofileOnHeader;
+    TextView tvUserName, tvUserMail;
 
     UserObj userObj = new UserObj();
 
@@ -143,7 +143,7 @@ public class HomePage extends AppCompatActivity{
     TextView tvCommitPost;
     String ytVidId = "";
     boolean ytPlayerInitialized = false;
-    PopupWindow progressPopup,updatePopup;
+    PopupWindow progressPopup, updatePopup;
     // For Dialogsa And Progress
     Button btnOk;
     Dialog postSucessDialog;
@@ -158,7 +158,7 @@ public class HomePage extends AppCompatActivity{
     }
 
     private void startbgService() {
-        startService(new Intent(HomePage.this,MyNotificationService.class));
+        startService(new Intent(HomePage.this, MyNotificationService.class));
     }
 
     @Override
@@ -172,7 +172,7 @@ public class HomePage extends AppCompatActivity{
         setNavHeaderdata();
         mainFramelayout.getForeground().setAlpha(0);
 
-        if(callCheckUpdate);
+        if (callCheckUpdate) ;
         checkforUpdate();
         loadHomePosts(token);
         loadUnreadmesscount();
@@ -226,7 +226,7 @@ public class HomePage extends AppCompatActivity{
             public void onClick(View v) {
 
                 ivGoChatScreen.visibleBadge(false);
-                startActivity(new Intent(HomePage.this,ChatScreen.class));
+                startActivity(new Intent(HomePage.this, ChatScreen.class));
 
             }
         });
@@ -235,7 +235,7 @@ public class HomePage extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HomePage.this, NotificationsPage.class);
-                i.putExtra("token",token);
+                i.putExtra("token", token);
                 startActivity(i);
             }
         });
@@ -243,14 +243,10 @@ public class HomePage extends AppCompatActivity{
             @SuppressLint({"WrongConstant", "RestrictedApi"})
             @Override
             public void onClick(View v) {
-                if(navView.getVisibility()==View.VISIBLE){
+                if (navView.getVisibility() == View.VISIBLE) {
                     navView.setVisibility(View.INVISIBLE);
-                    fabHodeNav.setVisibility(View.INVISIBLE);
-
-                }else {
+                } else {
                     navView.setVisibility(View.VISIBLE);
-                    fabHodeNav.setVisibility(View.VISIBLE);
-                    fabHodeNav.requestFocusFromTouch();
                 }
             }
         });
@@ -259,13 +255,6 @@ public class HomePage extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(HomePage.this, CreatePostPage.class));
-            }
-        });
-        fabHodeNav.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                navView.setVisibility(View.GONE);
-                fabHodeNav.setVisibility(View.GONE);
             }
         });
 
@@ -312,66 +301,65 @@ public class HomePage extends AppCompatActivity{
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
-                switch(id)
-                {
+                switch (id) {
                     case R.id.nav_my_profile:
-                        fabHodeNav.setVisibility(View.GONE);
+
                         navView.setVisibility(View.INVISIBLE);
-                        Intent i6 = new Intent(HomePage.this,MyProfile.class);
-                        i6.putExtra("token",token);
+                        Intent i6 = new Intent(HomePage.this, MyProfile.class);
+                        i6.putExtra("token", token);
                         startActivity(i6);
                         overridePendingTransition(0, 0);
                         break;
                     case R.id.nav_home:
-                        fabHodeNav.setVisibility(View.GONE);
+
                         navView.setVisibility(View.INVISIBLE);
                         break;
                     case R.id.nav_skill:
-                        fabHodeNav.setVisibility(View.GONE);
+
                         navView.setVisibility(View.INVISIBLE);
-                        Intent i4 = new Intent(HomePage.this,SkillPage.class);
-                        i4.putExtra("token",token);
+                        Intent i4 = new Intent(HomePage.this, SkillPage.class);
+                        i4.putExtra("token", token);
                         startActivity(i4);
                         overridePendingTransition(0, 0);
 
                         break;
                     case R.id.nav_teams:
-                        fabHodeNav.setVisibility(View.GONE);
+
                         navView.setVisibility(View.INVISIBLE);
-                        Intent i5 = new Intent(HomePage.this,TeamsPage.class);
-                        i5.putExtra("token",token);
+                        Intent i5 = new Intent(HomePage.this, TeamsPage.class);
+                        i5.putExtra("token", token);
                         startActivity(i5);
                         overridePendingTransition(0, 0);
 
                         break;
                     case R.id.nav_classes:
-                        fabHodeNav.setVisibility(View.GONE);
+
                         navView.setVisibility(View.INVISIBLE);
-                        Intent i3 = new Intent(HomePage.this,ClassesPage.class);
-                        i3.putExtra("token",token);
+                        Intent i3 = new Intent(HomePage.this, ClassesPage.class);
+                        i3.putExtra("token", token);
                         startActivity(i3);
                         overridePendingTransition(0, 0);
 
                         break;
                     case R.id.nav_users:
-                        fabHodeNav.setVisibility(View.GONE);
+
                         navView.setVisibility(View.INVISIBLE);
                         Intent i2 = new Intent(HomePage.this, StudentsUserPage.class);
-                        i2.putExtra("token",token);
+                        i2.putExtra("token", token);
                         startActivity(i2);
                         overridePendingTransition(0, 0);
                         break;
                     case R.id.nav_settings:
-                        fabHodeNav.setVisibility(View.GONE);
+
                         navView.setVisibility(View.INVISIBLE);
                         Intent i = new Intent(HomePage.this, SettingsActivityList.class);
-                        i.putExtra("token",token);
+                        i.putExtra("token", token);
                         startActivity(i);
                         overridePendingTransition(0, 0);
                         break;
 
                     case R.id.nav_jobs:
-                        fabHodeNav.setVisibility(View.GONE);
+
                         navView.setVisibility(View.INVISIBLE);
                         Intent i8 = new Intent(HomePage.this, JobsPage.class);
                         startActivity(i8);
@@ -380,14 +368,14 @@ public class HomePage extends AppCompatActivity{
 
                     case R.id.log_out:
                         ConformationDialog conformationDialog = new ConformationDialog(HomePage.this);
-                        conformationDialog.showConformDialog(HomePage.this,"Logout and exit app?",
-                                "  ","log_out");
+                        conformationDialog.showConformDialog(HomePage.this, "Logout and exit app?",
+                                "  ", "log_out");
                         break;
                     case R.id.nav_users_pro:
-                        fabHodeNav.setVisibility(View.GONE);
+
                         navView.setVisibility(View.INVISIBLE);
                         Intent ii = new Intent(HomePage.this, ProUserPage.class);
-                        ii.putExtra("token",token);
+                        ii.putExtra("token", token);
 
                         startActivity(ii);
                         overridePendingTransition(0, 0);
@@ -443,6 +431,12 @@ public class HomePage extends AppCompatActivity{
 
             }
         });
+        ivCloseNav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navView.setVisibility(View.GONE);
+            }
+        });
         linLayPickVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -490,18 +484,16 @@ public class HomePage extends AppCompatActivity{
                 String[] ytLink = s.toString().split("/");
                 ytVidId = ytLink[ytLink.length - 1];
 
-                if (ytVidId.length() > 4)
-                {
+                if (ytVidId.length() > 4) {
                     vvSelectedYtVideo.setVisibility(View.VISIBLE);
 
-                    if(ytPlayerInitialized)
-                    {
+                    if (ytPlayerInitialized) {
 
-                    }else {
+                    } else {
                         vvSelectedYtVideo.initializeWithWebUi(new YouTubePlayerListener() {
                             @Override
                             public void onReady(@NotNull YouTubePlayer youTubePlayer) {
-                                youTubePlayer.loadVideo(ytVidId,0);
+                                youTubePlayer.loadVideo(ytVidId, 0);
                                 ytLinkfinal = ytVidId;
                             }
 
@@ -549,7 +541,7 @@ public class HomePage extends AppCompatActivity{
                             public void onApiChange(@NotNull YouTubePlayer youTubePlayer) {
 
                             }
-                        },true);
+                        }, true);
                         ytPlayerInitialized = true;
                     }
 
@@ -591,7 +583,7 @@ public class HomePage extends AppCompatActivity{
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(HomePage.this, SearchPage.class);
-                i.putExtra("token",token);
+                i.putExtra("token", token);
                 startActivity(i);
             }
         });
@@ -606,7 +598,7 @@ public class HomePage extends AppCompatActivity{
             public void onResponse(Call<NotificationAlerrtResponse> call, Response<NotificationAlerrtResponse> response) {
                 Log.d(">>>Chat Response", response.raw().toString());
 
-                if(response.body() == null) {
+                if (response.body() == null) {
 
                 } else {
                     goNotiPage.setBadgeValue(response.body().getTotal_new());
@@ -628,7 +620,7 @@ public class HomePage extends AppCompatActivity{
             public void onResponse(Call<ChatUserResponse> call, Response<ChatUserResponse> response) {
                 Log.d(">>>Chat Response", response.raw().toString());
 
-                if(response.body() == null) {
+                if (response.body() == null) {
 
                 } else {
                     ivGoChatScreen.setBadgeValue(response.body().getTotalNew());
@@ -647,18 +639,17 @@ public class HomePage extends AppCompatActivity{
     private void checkforUpdate() {
         callCheckUpdate = false;
 
-        Call<Map<String,Integer>> call = RetrifitClient.getInstance()
+        Call<Map<String, Integer>> call = RetrifitClient.getInstance()
                 .getSettingsApi().hasUpdate(token);
 
-        call.enqueue(new Callback<Map<String,Integer>>() {
+        call.enqueue(new Callback<Map<String, Integer>>() {
             @Override
-            public void onResponse(Call<Map<String,Integer>> call, Response<Map<String,Integer>> response) {
-                Log.d("Response>>",response.raw().toString());
+            public void onResponse(Call<Map<String, Integer>> call, Response<Map<String, Integer>> response) {
+                Log.d("Response>>", response.raw().toString());
                 versioncode = BuildConfig.VERSION_CODE;
 
-                if(response.body()!=null)
-                {
-                    if(versioncode<response.body().get("code")) {
+                if (response.body() != null) {
+                    if (versioncode < response.body().get("code")) {
                         showUpdatePopup();
                     }
 
@@ -667,7 +658,7 @@ public class HomePage extends AppCompatActivity{
             }
 
             @Override
-            public void onFailure(Call<Map<String,Integer>> call, Throwable t) {
+            public void onFailure(Call<Map<String, Integer>> call, Throwable t) {
 
             }
 
@@ -684,7 +675,7 @@ public class HomePage extends AppCompatActivity{
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int height = displayMetrics.heightPixels;
         int width = displayMetrics.widthPixels;
-        updatePopup = new PopupWindow(popUpView, width-50,
+        updatePopup = new PopupWindow(popUpView, width - 50,
                 ViewGroup.LayoutParams.WRAP_CONTENT, true);
         updatePopup.setElevation(10f);
 
@@ -710,7 +701,6 @@ public class HomePage extends AppCompatActivity{
         });
 
 
-
         // Creation of popup
         updatePopup.setAnimationStyle(android.R.style.Animation_Dialog);
         updatePopup.showAtLocation(popUpView, Gravity.CENTER, 0, 0);
@@ -718,16 +708,14 @@ public class HomePage extends AppCompatActivity{
     }
 
 
-
     private void setNavHeaderdata() {
         tvUserName.setText(name);
         tvUserMail.setText(mail);
 
-        if(userObj.getProfilePath()!=null)
-        {
+        if (userObj.getProfilePath() != null) {
             Glide.with(this).
                     load("http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/profile_photos/"
-                            +userObj.getProfilePath())
+                            + userObj.getProfilePath())
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
@@ -743,9 +731,8 @@ public class HomePage extends AppCompatActivity{
                     }).into(civprofileOnHeader);
         }
 
-        if(userObj.getCoverPath()!= null)
-        {
-            Glide.with(this).load("http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/covers/"+
+        if (userObj.getCoverPath() != null) {
+            Glide.with(this).load("http://nexgeno1.s3.us-east-2.amazonaws.com/public/uploads/covers/" +
                     userObj.getCoverPath()).
                     listener(new RequestListener<Drawable>() {
                         @Override
@@ -779,7 +766,7 @@ public class HomePage extends AppCompatActivity{
         navView = findViewById(R.id.drawer_main_navigation);
         toolbar = findViewById(R.id.tbHome);
         drawerButtion = findViewById(R.id.drawer_home_button);
-        fabHodeNav = findViewById(R.id.fab_hide_nav_home);
+
         revPostView = findViewById(R.id.recViewHomePosts);
         erroeTitle = findViewById(R.id.errorTitle);
         ivGoChatScreen = findViewById(R.id.iv_go_chat_screen);
@@ -792,14 +779,14 @@ public class HomePage extends AppCompatActivity{
 
         NavigationView navigationView = (NavigationView)
                 findViewById(R.id.drawer_main_navigation);
-        View hView =  navigationView.getHeaderView(0);
+        View hView = navigationView.getHeaderView(0);
 
         //For Header Nav
         ivCoverOnheader = hView.findViewById(R.id.iv_user_cover_on_header);
         civprofileOnHeader = hView.findViewById(R.id.civ_user_profile_on_header);
         tvUserMail = hView.findViewById(R.id.tv_user_mail);
         tvUserName = hView.findViewById(R.id.tv_user_name);
-
+        ivCloseNav = hView.findViewById(R.id.iv_close_drawer);
 
         // post Utils
         linLayPickImage = findViewById(R.id.lin_lay_pick_image_in_home);
@@ -818,29 +805,29 @@ public class HomePage extends AppCompatActivity{
         mShimmerViewContainer.startShimmerAnimation();
     }
 
-    private void loadHomePosts(String token){
+    private void loadHomePosts(String token) {
         Call<HomePostModal> call = RetrifitClient.getInstance()
                 .getPostApi().getHomePosts(token);
         call.enqueue(new Callback<HomePostModal>() {
             @Override
             public void onResponse(Call<HomePostModal> call, Response<HomePostModal> response) {
-                try{
-                    if(response.body() == null){
+                try {
+                    if (response.body() == null) {
                         Log.d("Error>>", response.errorBody().string());
                         mShimmerViewContainer.stopShimmerAnimation();
                         mShimmerViewContainer.setVisibility(View.GONE);
 
 
-                    }else {
-                        if(response.body().getStatus()==null){
+                    } else {
+                        if (response.body().getStatus() == null) {
                             postDataList = response.body().getPosts().getData();
                             //revPostView.setLayoutManager(new LinearLayoutManager(HomePage.this));
-                            revPostView.setAdapter(new HomePostsAdapter(postDataList,HomePage.this,userObj.getId(),token));
+                            revPostView.setAdapter(new HomePostsAdapter(postDataList, HomePage.this, userObj.getId(), token));
                             mShimmerViewContainer.stopShimmerAnimation();
                             mShimmerViewContainer.setVisibility(View.GONE);
-                        }else {
+                        } else {
                             // Token Is Expired Or Invalid
-                            loginByApi(UnameValue,PasswordValue);
+                            loginByApi(UnameValue, PasswordValue);
                             mShimmerViewContainer.stopShimmerAnimation();
                             mShimmerViewContainer.setVisibility(View.GONE);
                         }
@@ -848,7 +835,7 @@ public class HomePage extends AppCompatActivity{
                     }
 
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
 
                     mShimmerViewContainer.stopShimmerAnimation();
@@ -868,22 +855,20 @@ public class HomePage extends AppCompatActivity{
 
     private void loginByApi(String email, String password) {
         Call<Map> call = RetrifitClient.getInstance()
-                .getApi().loginUser(email,password,true);
+                .getApi().loginUser(email, password, true);
         call.enqueue(new Callback<Map>() {
             @Override
             public void onResponse(Call<Map> call, Response<Map> response) {
-                try{
-                    if (response.body()==null)
-                    {
-                        if(response.errorBody()==null){
+                try {
+                    if (response.body() == null) {
+                        if (response.errorBody() == null) {
                             // progressBar.setVisibility(View.INVISIBLE);
-                        }else {
+                        } else {
                             //showAuthError();
                         }
 
-                    }else {
-                        if(response.body().get("error")==null)
-                        {
+                    } else {
+                        if (response.body().get("error") == null) {
                             String token = response.body().get("token").toString();
                             Log.d("HTML>>>>>  ", token);
                             //progressBar.setVisibility(View.INVISIBLE);
@@ -891,15 +876,14 @@ public class HomePage extends AppCompatActivity{
                             saveNewToken(token);
                             loadHomePosts(token);
 
-                        }else {
+                        } else {
                             //progressBar.setVisibility(View.INVISIBLE);
                             // showAuthError();
                         }
                     }
 
 
-
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -918,32 +902,33 @@ public class HomePage extends AppCompatActivity{
         SharedPreferences.Editor editor = settings.edit();
         // Edit and commit
 
-        editor.putString(TOKEN,token);
+        editor.putString(TOKEN, token);
         editor.commit();
     }
+
     private void loadPreferences() {
 
         SharedPreferences settings = getSharedPreferences(PREFS_NAME,
                 Context.MODE_PRIVATE);
-        SharedPreferences fcmTokenpref = getSharedPreferences("prefs",MODE_PRIVATE);
+        SharedPreferences fcmTokenpref = getSharedPreferences("prefs", MODE_PRIVATE);
 
-        fcm_token = fcmTokenpref.getString("fcm_token","");
+        fcm_token = fcmTokenpref.getString("fcm_token", "");
         // Get value
         UnameValue = settings.getString(PREF_UNAME, DefaultUnameValue);
         PasswordValue = settings.getString(PREF_PASSWORD, DefaultPasswordValue);
         Gson gson = new Gson();
-        userObj = gson.fromJson(settings.getString("UserObj",""),UserObj.class);
+        userObj = gson.fromJson(settings.getString("UserObj", ""), UserObj.class);
         name = userObj.getName();
         mail = userObj.getEmail();
-        token = settings.getString(TOKEN,DefaultTokenValue);
+        token = settings.getString(TOKEN, DefaultTokenValue);
 
     }
 
 
     // PostMethodWithAPI
 
-    private  void  startProgressPopup(Context context){
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+    private void startProgressPopup(Context context) {
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View popUpView = inflater.inflate(R.layout.progres_popup,
                 null); // inflating popup layout
         progressPopup = new PopupWindow(popUpView, ViewGroup.LayoutParams.FILL_PARENT,
@@ -985,6 +970,7 @@ public class HomePage extends AppCompatActivity{
             }
         });
     }
+
     private void makePostWithYtLink(String ytLinkparam) {
 
         startProgressPopup(this);
@@ -1021,14 +1007,15 @@ public class HomePage extends AppCompatActivity{
             }
         });
     }
+
     private void makePostWithIamge() {
 
         startProgressPopup(this);
         RequestBody content = RequestBody.create(MediaType.parse("multipart/form-data"), etCaption.getText().toString());
 
-        RequestBody image = RequestBody.create(MediaType.parse("multipart/form-data"),imageFile);
+        RequestBody image = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile);
 
-        MultipartBody.Part imageToSend = MultipartBody.Part.createFormData("image",imageFile.getName(), image);
+        MultipartBody.Part imageToSend = MultipartBody.Part.createFormData("image", imageFile.getName(), image);
 
         RequestBody mediaType = RequestBody.create(MediaType.parse("multipart/form-data"), "1");
         RequestBody groupId = RequestBody.create(MediaType.parse("multipart/form-data"), "0");
@@ -1059,14 +1046,15 @@ public class HomePage extends AppCompatActivity{
             }
         });
     }
+
     private void makepostWithVideo() {
 
         startProgressPopup(this);
         RequestBody content = RequestBody.create(MediaType.parse("multipart/form-data"), etCaption.getText().toString());
 
-        RequestBody video = RequestBody.create(MediaType.parse("multipart/form-data"),videoFile);
+        RequestBody video = RequestBody.create(MediaType.parse("multipart/form-data"), videoFile);
 
-        MultipartBody.Part videoToSend = MultipartBody.Part.createFormData("video",videoFile.getName(),video);
+        MultipartBody.Part videoToSend = MultipartBody.Part.createFormData("video", videoFile.getName(), video);
 
         RequestBody mediaType = RequestBody.create(MediaType.parse("multipart/form-data"), "1");
         RequestBody groupId = RequestBody.create(MediaType.parse("multipart/form-data"), "0");
